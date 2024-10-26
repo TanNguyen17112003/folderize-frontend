@@ -13,12 +13,10 @@ const Page = () => {
           <h1 className={`text-center text-4xl`}>401: Authorization required</h1>
           <p className='text-center text-gray-500 mt-1'>
             You either tried some shady route or you came here by mistake. Whichever it is, try
-            using the navigation . 
+            using the navigation.
           </p>
           <div className='flex justify-center mt-6'>
-            <button
-              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue active:bg-blue-800'
-            >
+            <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue active:bg-blue-800'>
               Back to Home
             </button>
           </div>
