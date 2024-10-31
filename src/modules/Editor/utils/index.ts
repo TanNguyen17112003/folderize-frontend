@@ -3,27 +3,25 @@ import {
   TDescendant,
   Value,
   createPlateEditor,
-  deserializeHtml,
-} from "@udecode/plate-common";
-import plugins from "../plugins";
-import _ from "lodash";
-import { v4 } from "uuid";
-import { ConvertDocx2EditorResult } from "../types";
+  deserializeHtml
+} from '@udecode/plate-common';
+import plugins from '../plugins';
+import _ from 'lodash';
+import { v4 } from 'uuid';
+import { ConvertDocx2EditorResult } from '../types';
 
-export const convertDocx2Editor = async (
-  file: File
-): Promise<ConvertDocx2EditorResult> => {
-  const container = document.createElement("div");
-  container.style.display = "none";
+export const convertDocx2Editor = async (file: File): Promise<ConvertDocx2EditorResult> => {
+  const container = document.createElement('div');
+  container.style.display = 'none';
   document.body.appendChild(container);
-  const docx = await import("docx-preview");
+  const docx = await import('docx-preview');
 
   await docx.renderAsync(file, container, undefined, {
     inWrapper: false,
     experimental: true,
     breakPages: true,
     ignoreWidth: true,
-    ignoreFonts: true,
+    ignoreFonts: true
   });
 
   const htmlContent = container.innerHTML;
@@ -31,12 +29,12 @@ export const convertDocx2Editor = async (
 
   const htmlArticleString = htmlContent.match(/<article(.*)<\/article>/g)?.[0];
   if (!htmlArticleString) {
-    throw "Có lỗi khi đọc bài kinh";
+    throw 'Có lỗi khi đọc bài kinh';
   }
 
   const tmpEditor = createPlateEditor({ plugins });
   const blocks: any[] = deserializeHtml(tmpEditor, {
-    element: htmlArticleString,
+    element: htmlArticleString
   });
   const cleanedBlocks = blocks.map((block) => cleanBlock(block));
   const noteIds: string[] = [];
@@ -45,29 +43,26 @@ export const convertDocx2Editor = async (
     noteIds.push(...result.noteIds);
     return result.block;
   });
-  console.log("notedBlocks", notedBlocks);
-  console.log("noteIds", noteIds);
-  let htmlPos = htmlContent.indexOf("<ol>", htmlContent.indexOf("</article>"));
+  console.log('notedBlocks', notedBlocks);
+  console.log('noteIds', noteIds);
+  let htmlPos = htmlContent.indexOf('<ol>', htmlContent.indexOf('</article>'));
   const notes = noteIds.map((noteId) => {
     if (htmlPos < 0) {
-      return { id: noteId, note: "" };
+      return { id: noteId, note: '' };
     }
-    htmlPos = htmlContent.indexOf("<li>", htmlPos + 1);
+    htmlPos = htmlContent.indexOf('<li>', htmlPos + 1);
     if (htmlPos < 0) {
-      return { id: noteId, note: "" };
+      return { id: noteId, note: '' };
     }
 
-    const noteContent = htmlContent.substring(
-      htmlPos,
-      htmlContent.indexOf("</li>", htmlPos)
-    );
+    const noteContent = htmlContent.substring(htmlPos, htmlContent.indexOf('</li>', htmlPos));
     return { id: noteId, note: extractContent(noteContent).trim() };
   });
-  console.log("notes", notes);
+  console.log('notes', notes);
   return {
     blocks: notedBlocks,
     notes,
-    plainText: extractContent(htmlArticleString),
+    plainText: extractContent(htmlArticleString)
   };
 };
 
@@ -95,18 +90,15 @@ export const cleanBlock = (block: any): any => {
       newChildren.push(cleanBlock(blockChildren[i]));
     } else if (
       currentChild &&
-      _.isEqual(
-        { ...currentChild, text: "" },
-        { ...blockChildren[i], text: "" }
-      )
+      _.isEqual({ ...currentChild, text: '' }, { ...blockChildren[i], text: '' })
     ) {
-      currentChild.text += blockChildren[i].text || "";
+      currentChild.text += blockChildren[i].text || '';
     } else {
       if (currentChild) {
         newChildren.push(currentChild);
       }
       currentChild = blockChildren[i];
-      currentChild.text = currentChild.text || "";
+      currentChild.text = currentChild.text || '';
     }
   }
   if (currentChild != null) {
@@ -121,10 +113,10 @@ export const cleanBlock = (block: any): any => {
       }
       if (child.superscript) {
         child.noteIndex = child.text;
-        child.text = "*";
+        child.text = '*';
       }
       return newChild;
-    }),
+    })
   };
 };
 
@@ -151,23 +143,20 @@ const getNoteIds = (block: any): { block: any; noteIds: string[] } => {
   });
   const newChildren: any[] = [];
   tempNewChildren.forEach((child, index) => {
-    if (
-      index < tempNewChildren.length - 1 &&
-      tempNewChildren[index + 1].noteId
-    ) {
+    if (index < tempNewChildren.length - 1 && tempNewChildren[index + 1].noteId) {
       const text: string = child.text;
       text.trimEnd();
-      const wordStartPos = text.lastIndexOf("(");
-      const wordEndPos = text.lastIndexOf(")");
+      const wordStartPos = text.lastIndexOf('(');
+      const wordEndPos = text.lastIndexOf(')');
       if (wordEndPos == text.length - 1) {
         newChildren.push({
           ...child,
-          text: text.substring(0, wordStartPos),
+          text: text.substring(0, wordStartPos)
         });
         newChildren.push({
           ...child,
           noteId: tempNewChildren[index + 1].noteId,
-          text: text.substring(wordStartPos + 1, wordEndPos),
+          text: text.substring(wordStartPos + 1, wordEndPos)
         });
         return;
       }
@@ -178,28 +167,25 @@ const getNoteIds = (block: any): { block: any; noteIds: string[] } => {
 };
 
 export const cleanHtml = (content: string) => {
-  let resultContent = "";
+  let resultContent = '';
   let pos = 0;
   while (true) {
-    const spanIndex = content.indexOf("<span", pos);
+    const spanIndex = content.indexOf('<span', pos);
     if (spanIndex >= 0) {
       resultContent += content.substring(pos, spanIndex);
-      const endIndex = content.indexOf(">", pos + 1);
+      const endIndex = content.indexOf('>', pos + 1);
       const spanContent = content.substring(spanIndex, endIndex + 1);
-      let closeIndex = content.indexOf("</span>", endIndex + 1);
+      let closeIndex = content.indexOf('</span>', endIndex + 1);
       let textContent = content.substring(endIndex + 1, closeIndex);
       while (true) {
         const nextSpanIndex = content.indexOf(spanContent, closeIndex + 1);
         if (nextSpanIndex != closeIndex + 7) {
           break;
         }
-        closeIndex = content.indexOf("</span>", nextSpanIndex + 1);
-        textContent += content.substring(
-          nextSpanIndex + spanContent.length + 1,
-          closeIndex
-        );
+        closeIndex = content.indexOf('</span>', nextSpanIndex + 1);
+        textContent += content.substring(nextSpanIndex + spanContent.length + 1, closeIndex);
       }
-      resultContent += spanContent + textContent + "</span>";
+      resultContent += spanContent + textContent + '</span>';
       pos = closeIndex + 7;
     } else {
       resultContent += content.substring(pos);
@@ -218,15 +204,15 @@ function rgbToHex(rgb: string): string {
   const green = parseInt(match[2], 10);
   const blue = parseInt(match[3], 10);
 
-  const hexRed = red.toString(16).padStart(2, "0");
-  const hexGreen = green.toString(16).padStart(2, "0");
-  const hexBlue = blue.toString(16).padStart(2, "0");
+  const hexRed = red.toString(16).padStart(2, '0');
+  const hexGreen = green.toString(16).padStart(2, '0');
+  const hexBlue = blue.toString(16).padStart(2, '0');
 
   return `#${hexRed}${hexGreen}${hexBlue}`;
 }
 
 function extractContent(html: string) {
-  var span = document.createElement("span");
+  const span = document.createElement('span');
   span.innerHTML = html;
   return span.textContent || span.innerText;
 }
@@ -237,10 +223,7 @@ export const getPathByNoteId = (
   options?: { noSuperscript?: boolean }
 ): number[] | null => {
   for (let i = 0; i < blocks.length; i++) {
-    if (
-      blocks[i].noteId == noteId &&
-      (options?.noSuperscript || blocks[i].superscript)
-    ) {
+    if (blocks[i].noteId == noteId && (options?.noSuperscript || blocks[i].superscript)) {
       return [i];
     }
     if (blocks[i].children) {
@@ -269,7 +252,7 @@ export const getAllNotePaths = (
     if (blocks[i].noteId && (options?.noSuperscript || blocks[i].superscript)) {
       result.push({
         id: blocks[i].noteId as string,
-        path: [...currentPath, i],
+        path: [...currentPath, i]
       });
     }
     if (blocks[i].children) {
@@ -305,9 +288,9 @@ export const getPageMarkFromBlocks = (
   currentPath: number[]
 ): string => {
   if (targetPath && comparePath(currentPath, targetPath) > 0) {
-    return "";
+    return '';
   }
-  let result = "";
+  let result = '';
   blocks.forEach((block, pathIndex) => {
     if (block.text) {
       const text: string = block.text as string;
@@ -318,11 +301,10 @@ export const getPageMarkFromBlocks = (
       }
     }
     if (block.children) {
-      const mark = getPageMarkFromBlocks(
-        block.children as TDescendant[],
-        targetPath,
-        [...currentPath, pathIndex]
-      );
+      const mark = getPageMarkFromBlocks(block.children as TDescendant[], targetPath, [
+        ...currentPath,
+        pathIndex
+      ]);
       if (mark) {
         result = mark;
       }
@@ -342,14 +324,10 @@ export const getPageMarkFromBlocks = (
  */
 export const getPageMark = (editor: PlateEditor<Value>): string => {
   const selection = editor.selection;
-  let mark = "";
+  let mark = '';
   for (let index = 0; index < editor.children.length; index++) {
     const child = editor.children[index];
-    const tmpMark = getPageMarkFromBlocks(
-      child.children,
-      selection?.anchor.path,
-      [index]
-    );
+    const tmpMark = getPageMarkFromBlocks(child.children, selection?.anchor.path, [index]);
     if (tmpMark) {
       mark = tmpMark;
       if (!selection) {
@@ -377,22 +355,24 @@ export const isContainNote = (
   return false;
 };
 
-export const getNodeByPath = (
-  block: Object & { children: TDescendant[] },
-  path: number[]
-): TDescendant | undefined => {
-  if (path.length == 0) {
+interface Block {
+  children: TDescendant[];
+}
+
+export const getNodeByPath = (block: Block, path: number[]): TDescendant | undefined => {
+  if (path.length === 0) {
     return undefined;
   }
   let node: TDescendant = block.children?.[path[0]];
-  path.forEach((id) => {
+  for (let i = 1; i < path.length; i++) {
+    const id = path[i];
     const children: TDescendant[] = node.children as TDescendant[];
     if (node.children && children[id]) {
       node = children[id];
     } else {
       return undefined;
     }
-  });
+  }
 
   return node;
 };
@@ -404,9 +384,9 @@ export const updateNoteIndexes = (editor: PlateEditor<Value>) => {
   paths.forEach((path, index) => {
     editor.select({
       anchor: { path: path.path, offset: 0 },
-      focus: { path: path.path, offset: 1 },
+      focus: { path: path.path, offset: 1 }
     });
-    editor.addMark("noteIndex", (index + 1).toString());
+    editor.addMark('noteIndex', (index + 1).toString());
   });
   if (selection) {
     editor.select(selection);
@@ -422,12 +402,12 @@ export const showNote = (editor: PlateEditor<Value>, noteId: string) => {
     editor.select({
       anchor: {
         path,
-        offset: 0,
+        offset: 0
       },
       focus: {
         path,
-        offset: 1,
-      },
+        offset: 1
+      }
     });
   }
 };

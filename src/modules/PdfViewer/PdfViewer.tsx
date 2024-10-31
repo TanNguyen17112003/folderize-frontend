@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { type RenderTask, type PDFDocumentProxy } from "pdfjs-dist";
-import type PdfLib from "pdfjs-dist/types/src/pdf";
-import Thumbnails from "./Thumbnails";
-import clsx from "clsx";
-import Pagination from "src/components/ui/Pagination";
-import ControlWrapper from "./ControlWrapper";
-import { Progress } from "src/components/shadcn/ui/progress";
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { type RenderTask, type PDFDocumentProxy } from 'pdfjs-dist';
+import type PdfLib from 'pdfjs-dist/types/src/pdf';
+import Thumbnails from './Thumbnails';
+import clsx from 'clsx';
+import Pagination from 'src/components/ui/Pagination';
+import ControlWrapper from './ControlWrapper';
+import { Progress } from 'src/components/shadcn/ui/progress';
 
 interface PdfViewerProps {
   src: string | ArrayBuffer;
@@ -26,12 +26,12 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
   rotation,
   changePage,
   showThumbnail,
-  protectContent,
+  protectContent
 }) => {
   const [pageCount, setPageCount] = useState(0);
   const [pdf, setPDF] = useState<PDFDocumentProxy | null>(null);
   const [thumbnailImages, setThumbnailImages] = useState<string[]>([]);
-  const [error, setError] = useState({ status: false, message: "" });
+  const [error, setError] = useState({ status: false, message: '' });
   const [fetchStatus, setFetchStatus] = useState<{
     progress: number;
     error: string;
@@ -51,17 +51,17 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
       }
 
       if (!pdfDoc) {
-        console.log("no pdfDoc");
+        console.log('no pdfDoc');
         return;
       }
 
       if (!canvasRef.current) {
-        console.log("no canvas");
+        console.log('no canvas');
         return;
       }
 
       if (!wrapperRef.current) {
-        console.log("no wrapper");
+        console.log('no wrapper');
         return;
       }
 
@@ -70,7 +70,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
 
         const viewport = page.getViewport({
           scale: scale,
-          rotation,
+          rotation
         });
 
         // Prepare canvas using PDF page dimensions
@@ -82,15 +82,15 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
         })`;
 
         // Render PDF page into canvas context
-        let canvasContext = canvas.getContext("2d");
+        const canvasContext = canvas.getContext('2d');
         if (!canvasContext) {
-          throw "Failed to get canvas context";
+          throw 'Failed to get canvas context';
         }
         canvasContext.clearRect(0, 0, canvas.width, canvas.height);
         canvasContext.beginPath();
         const renderContext = {
           canvasContext,
-          viewport,
+          viewport
         };
         // cancel previous render task
         if (prevRenderTask.current != null) {
@@ -120,17 +120,17 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
           //   });
           // }
         } catch (error) {
-          console.log("Error occured while rendering !\n", error);
+          console.log('Error occured while rendering !\n', error);
           setError({
             status: true,
-            message: "Error occured while rendering !",
+            message: 'Error occured while rendering !'
           });
         }
       } catch (error) {
-        console.log("Error while reading the pages !\n", error);
+        console.log('Error while reading the pages !\n', error);
         setError({
           status: true,
-          message: "Error while reading the pages !",
+          message: 'Error while reading the pages !'
         });
       }
     },
@@ -143,13 +143,13 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
       const imgList = [];
       if (Object.entries(showThumbnail || {}).length !== 0) {
         if (!thumbnailRef.current) {
-          console.log("no thumb canvas");
+          console.log('no thumb canvas');
           return;
         }
 
-        let thumbnailScal = showThumbnail?.scale || 1;
+        const thumbnailScal = showThumbnail?.scale || 1;
         let scale = 0.25;
-        let rotation = 0;
+        const rotation = 0;
         if (1 <= thumbnailScal && thumbnailScal <= 5) {
           scale = thumbnailScal / 10;
         }
@@ -160,7 +160,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
 
           // Prepare canvas using PDF page dimensions
           if (!thumbnailRef.current) {
-            console.log("no thumb canvas");
+            console.log('no thumb canvas');
             return;
           }
           const canvas = thumbnailRef.current;
@@ -168,13 +168,13 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
           canvas.width = viewport.width;
 
           // Render PDF page into canvas context
-          let canvasContext = canvas.getContext("2d");
+          const canvasContext = canvas.getContext('2d');
           if (canvasContext) {
             canvasContext.clearRect(0, 0, canvas.width, canvas.height);
             canvasContext.beginPath();
             const renderContext = {
               canvasContext,
-              viewport,
+              viewport
             };
             const renderTask = page.render(renderContext);
             await renderTask.promise;
@@ -182,14 +182,14 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
 
           // create image from canvas and push into array
           imgList.push({
-            image: canvas.toDataURL("image/png"),
+            image: canvas.toDataURL('image/png'),
             height: viewport.height,
-            width: viewport.width,
+            width: viewport.width
           });
           if (pageNo % 20 == 0) {
             setThumbnailImages([
               ...imgList.map((img) => img.image),
-              ...Array(pageCount - imgList.length).fill(""),
+              ...Array(pageCount - imgList.length).fill('')
             ]);
           }
         }
@@ -205,56 +205,56 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
     let pdfDoc: PDFDocumentProxy | null = null;
     try {
       if (!pdfJS.current) {
-        const existScript = document.getElementById("pdf-worker");
+        const existScript = document.getElementById('pdf-worker');
         if (!existScript) {
-          const script = document.createElement("script");
-          script.src = "/pdf/pdf.worker.min.mjs";
+          const script = document.createElement('script');
+          script.src = '/pdf/pdf.worker.min.mjs';
           script.async = true;
-          script.type = "module";
-          script.id = "pdf-worker";
+          script.type = 'module';
+          script.id = 'pdf-worker';
           document.body.appendChild(script);
         }
-        pdfJS.current = await import("pdfjs-dist");
-        pdfJS.current.GlobalWorkerOptions.workerSrc = "/pdf/pdf.worker.min.mjs";
+        pdfJS.current = await import('pdfjs-dist');
+        pdfJS.current.GlobalWorkerOptions.workerSrc = '/pdf/pdf.worker.min.mjs';
       }
 
       const task = pdfJS.current.getDocument(src);
       task.onProgress = (loaded: number, total: number) =>
-        setFetchStatus({ error: "", progress: loaded / (total || 1) });
+        setFetchStatus({ error: '', progress: loaded / (total || 1) });
       pdfDoc = await task.promise;
       setPDF(pdfDoc);
       setPageCount(pdfDoc.numPages);
       setFetchStatus(undefined);
     } catch (error) {
-      console.warn("Error while opening the document !\n", error);
+      console.warn('Error while opening the document !\n', error);
       setError({
         status: true,
-        message: "Error while opening the document !",
+        message: 'Error while opening the document !'
       });
-      setFetchStatus({ progress: 0, error: "Không thể mở file" });
+      setFetchStatus({ progress: 0, error: 'Không thể mở file' });
     }
   }, [src]);
 
   const renderPDF = useCallback(async () => {
     try {
       if (!pdf) {
-        throw "No pdf";
+        throw 'No pdf';
       }
-      setError({ status: false, message: "" });
+      setError({ status: false, message: '' });
 
       await displayPage(pdf);
     } catch (error) {
-      console.log("Error while render the document !\n", error);
+      console.log('Error while render the document !\n', error);
       setError({
         status: true,
-        message: "Error while render the document !",
+        message: 'Error while render the document !'
       });
     }
   }, [displayPage, pdf]);
 
   useEffect(() => {
     if (src) {
-      console.log("fetchPDF", fetchPDF);
+      console.log('fetchPDF', fetchPDF);
       fetchPDF();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -269,7 +269,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
 
   useEffect(() => {
     if (pdf) {
-      console.log("renderPDF", renderPDF);
+      console.log('renderPDF', renderPDF);
       renderPDF();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -277,61 +277,48 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
 
   return (
     <>
-      <div className="flex bg-black/5 relative h-full">
+      <div className='flex bg-black/5 relative h-full'>
         {fetchStatus ? (
-          <div className="flex h-[100px] items-center justify-center mt-4">
+          <div className='flex h-[100px] items-center justify-center mt-4'>
             {fetchStatus.error ? (
-              <div className="text-destructive"></div>
+              <div className='text-destructive'></div>
             ) : (
-              <Progress
-                value={fetchStatus.progress * 100}
-                className="bg-gray-300 h-3"
-              />
+              <Progress value={fetchStatus.progress * 100} className='bg-gray-300 h-3' />
             )}
           </div>
         ) : (
           <>
-            <div className="absolute top-0 left-0 p-3 w-[280px] h-full z-10">
+            <div className='absolute top-0 left-0 p-3 w-[280px] h-full z-10'>
               <Thumbnails
                 images={thumbnailImages}
-                className="h-full"
-                symbol="a"
+                className='h-full'
+                symbol='a'
                 onPageChange={changePage}
                 selectedPage={pageNum}
               />
             </div>
-            <div
-              className={clsx(
-                "absolute top-0 left-[260px]",
-                error.status && "hidden"
-              )}
-            >
-              <div className="text-error">{error.message}</div>
+            <div className={clsx('absolute top-0 left-[260px]', error.status && 'hidden')}>
+              <div className='text-error'>{error.message}</div>
             </div>
-            <div className="flex-1 ml-[280px] flex flex-col">
+            <div className='flex-1 ml-[280px] flex flex-col'>
               <div
-                className="flex-1 flex items-center justify-center z-0 overflow-hidden relative"
+                className='flex-1 flex items-center justify-center z-0 overflow-hidden relative'
                 ref={wrapperRef}
               >
-                <ControlWrapper className="w-full h-full flex items-center justify-center">
+                <ControlWrapper className='w-full h-full flex items-center justify-center'>
                   <canvas
-                    className={clsx(
-                      "border rounded-md z-0",
-                      error.status && "hidden"
-                    )}
-                    style={error.status ? { display: "none" } : undefined}
-                    onContextMenu={(e) =>
-                      protectContent ? e.preventDefault() : null
-                    }
+                    className={clsx('border rounded-md z-0', error.status && 'hidden')}
+                    style={error.status ? { display: 'none' } : undefined}
+                    onContextMenu={(e) => (protectContent ? e.preventDefault() : null)}
                     ref={canvasRef}
                   />
-                  <div id="textLayer" className="absolute"></div>
+                  <div id='textLayer' className='absolute'></div>
                 </ControlWrapper>
               </div>
 
               <div
                 className={clsx(
-                  "flex justify-end w-full left-0 relative z-40 gap-4 py-3 px-3 border-top"
+                  'flex justify-end w-full left-0 relative z-40 gap-4 py-3 px-3 border-top'
                 )}
               >
                 <div></div>
@@ -348,7 +335,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
         )}
       </div>
 
-      <canvas ref={thumbnailRef} className="hidden" />
+      <canvas ref={thumbnailRef} className='hidden' />
     </>
   );
 };
