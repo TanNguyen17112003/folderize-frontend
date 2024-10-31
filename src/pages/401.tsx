@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { Box, Button, Container, Typography } from '@mui/material';
-import image401 from '../../public/error-401.png';
+import image401 from '../../public/ui/error-401.png';
 
 const Page = () => {
   const router = useRouter();
