@@ -13,18 +13,13 @@ export const paths = {
   admin: {
     index: '/admin',
     'access-control': '/admin/access-control',
-    file: {
-      'file-upload': '/admin/file/file-upload',
-      'file-list': '/admin/file/file-list'
-    },
-    user: '/admin/user'
+    'user-management': '/admin/user-management'
   },
   employee: {
-    index: '/employee',
-    file: {
-      'file-upload': '/employee/file/file-upload',
-      'file-list': '/employee/file/file-list'
-    }
+    index: '/employee'
+  },
+  user: {
+    index: '/user'
   },
   401: '/401',
   404: '/404',
