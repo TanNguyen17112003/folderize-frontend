@@ -14,7 +14,7 @@ interface ContextValue {
   deleteDocument: (ids: Document['id'][]) => Promise<void>;
 }
 
-export const OrganizationsContext = createContext<ContextValue>({
+export const DocumentsContext = createContext<ContextValue>({
   getDocumentsApi: DEFAULT_FUNCTION_RETURN,
 
   createDocument: async () => {},
@@ -22,7 +22,7 @@ export const OrganizationsContext = createContext<ContextValue>({
   deleteDocument: async () => {}
 });
 
-const OrganizationsProvider = ({ children }: { children: ReactNode }) => {
+const DocumentsProvider = ({ children }: { children: ReactNode }) => {
   const getDocumentsApi = useFunction(DocumentsApi.getDocuments);
 
   const createDocument = useCallback(
@@ -94,7 +94,7 @@ const OrganizationsProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <OrganizationsContext.Provider
+    <DocumentsContext.Provider
       value={{
         getDocumentsApi,
 
@@ -104,10 +104,10 @@ const OrganizationsProvider = ({ children }: { children: ReactNode }) => {
       }}
     >
       {children}
-    </OrganizationsContext.Provider>
+    </DocumentsContext.Provider>
   );
 };
 
-export const useOrganizationsContext = () => useContext(OrganizationsContext);
+export const useDocumentsContext = () => useContext(DocumentsContext);
 
-export default OrganizationsProvider;
+export default DocumentsProvider;
