@@ -68,7 +68,7 @@ function DashboardIndex() {
             color='info'
             fullWidth={false}
             endIcon={<ArrowRight />}
-            onClick={() => router.push(paths.documents.index)}
+            onClick={() => router.push(paths.admin['user-management'])}
           >
             Khám phá
           </Button>
