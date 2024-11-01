@@ -152,7 +152,7 @@ export const SideNav: FC<SideNavProps> = (props) => {
       {!user && (
         <Box
           className='py-10 px-4 fixed inset-0 z-50 h-screen text-white bg-[white] overflow-hidden border-r border-solid border-background-other-Boxider shadow-lg'
-          style={{ width: SIDE_NAV_WIDTH - 20 }}
+          style={{ width: SIDE_NAV_WIDTH }}
         >
           <Stack marginBottom={5}>
             <Typography
