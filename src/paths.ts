@@ -10,6 +10,9 @@ export const paths = {
     'reset-password': '/auth/reset-password',
     logout: '/auth/logout'
   },
+  dashboard: {
+    index: '/dashboard'
+  },
   admin: {
     index: '/admin',
     'access-control': '/admin/access-control',
@@ -20,6 +23,10 @@ export const paths = {
   },
   user: {
     index: '/user'
+  },
+  documents: {
+    index: '/documents',
+    'upload-page': '/documents/documents-upload-page'
   },
   401: '/401',
   404: '/404',
