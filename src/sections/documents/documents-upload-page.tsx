@@ -1,13 +1,16 @@
-import { Badge, Button, Chip, List, ListItem, Stack, Typography } from '@mui/material';
+import { Button, Chip, List, ListItem, Stack } from '@mui/material';
 import { Box } from '@mui/system';
 import { DocumentUpload } from 'iconsax-react';
-import { set, size } from 'lodash';
+import { size } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import { CustomTable } from 'src/components/custom-table';
 import FileDropzone from 'src/components/FileDropzone';
 import useAppSnackbar from 'src/hooks/use-app-snackbar';
+import { bytesToSize } from 'src/utils/bytes-to-size';
 import { downloadUrl } from 'src/utils/url-handler';
 import getUploadDOcumentConfig from './documents-upload-config';
+import PreviewPdf from './previewPdf';
+import { useDialog } from 'src/hooks/use-dialog';
 
 export interface FileWithId {
   id: string;
@@ -15,7 +18,9 @@ export interface FileWithId {
   size: string;
   type: string;
   date: Date;
+  path: string;
 }
+
 export const FILE_TYPES = [
   { type: 'PDF', color: 'rgb(255,9,9)' },
   { type: 'DOC', color: 'rgb(0,123,255)' },
@@ -29,15 +34,9 @@ export const FILE_TYPES = [
 const DocumentUploadPage = () => {
   const [files, setFiles] = useState<FileWithId[]>([]);
   const [finishUpload, setFinishUpload] = useState(false);
-
+  const pdfDialog = useDialog<FileWithId>();
   const { showSnackbarError } = useAppSnackbar();
 
-  const formatFileSize = (size: number) => {
-    if (size < 1024) return size + ' Bytes';
-    if (size < 1024 * 1024) return (size / 1024).toFixed(2) + ' KB';
-    if (size < 1024 * 1024 * 1024) return (size / (1024 * 1024)).toFixed(2) + ' MB';
-    return (size / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
-  };
   const formatFileType = (type: string) => {
     return type.split('/')[1];
   };
@@ -46,9 +45,12 @@ const DocumentUploadPage = () => {
       onClickDelete: (data) => {
         const newFiles = files.filter((file) => file.id !== data.id);
         setFiles(newFiles);
+      },
+      onClickReport(data) {
+        pdfDialog.handleOpen(data);
       }
     });
-  }, [files]);
+  }, [files, pdfDialog]);
   useEffect(() => {
     if (files.length > 0) {
       setFinishUpload(true);
@@ -69,9 +71,10 @@ const DocumentUploadPage = () => {
               return {
                 id: (index + 1).toString(),
                 name: file.name,
-                size: formatFileSize(file.size),
+                size: bytesToSize(file.size, 2),
                 type: formatFileType(file.type),
-                date: new Date()
+                date: new Date(),
+                path: URL.createObjectURL(file)
               };
             });
             setFiles(newFiles);
@@ -92,6 +95,10 @@ const DocumentUploadPage = () => {
           }
         />
         {finishUpload && <CustomTable configs={documentUpLoadTabelConfig} rows={files} />}
+        {files.length > 0 && (
+          <PreviewPdf open={pdfDialog.open} onClose={pdfDialog.handleClose} file={files[0]} />
+        )}
+
         <Button
           variant='contained'
           startIcon={<DocumentUpload />}
