@@ -6,12 +6,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { CustomTable } from 'src/components/custom-table';
 import FileDropzone from 'src/components/FileDropzone';
 import useAppSnackbar from 'src/hooks/use-app-snackbar';
+import { useDialog } from 'src/hooks/use-dialog';
 import { bytesToSize } from 'src/utils/bytes-to-size';
 import { downloadUrl } from 'src/utils/url-handler';
 import getUploadDOcumentConfig from './documents-upload-config';
 import PreviewPdf from './previewPdf';
-import { useDialog } from 'src/hooks/use-dialog';
-
+import WordPreviewDialog from './previewWord';
 export interface FileWithId {
   id: string;
   name: string;
@@ -35,10 +35,12 @@ const DocumentUploadPage = () => {
   const [files, setFiles] = useState<FileWithId[]>([]);
   const [finishUpload, setFinishUpload] = useState(false);
   const pdfDialog = useDialog<FileWithId>();
+  const wordDialog = useDialog<FileWithId>();
   const { showSnackbarError } = useAppSnackbar();
 
-  const formatFileType = (type: string) => {
-    return type.split('/')[1];
+  const formatFileType = (name: string) => {
+    const token = name.split('.');
+    return token[token.length - 1].toUpperCase();
   };
   const documentUpLoadTabelConfig = useMemo(() => {
     return getUploadDOcumentConfig({
@@ -47,17 +49,21 @@ const DocumentUploadPage = () => {
         setFiles(newFiles);
       },
       onClickReport(data) {
-        pdfDialog.handleOpen(data);
+        if (data.type === 'PDF') {
+          pdfDialog.handleOpen(data);
+        } else if (data.type === 'DOCX' || data.type === 'DOC') {
+          wordDialog.handleOpen(data);
+        }
       }
     });
-  }, [files, pdfDialog]);
+  }, [files, pdfDialog, wordDialog]);
   useEffect(() => {
     if (files.length > 0) {
       setFinishUpload(true);
     } else {
       setFinishUpload(false);
     }
-  }, [files]);
+  }, [files, showSnackbarError]);
   return (
     <Stack spacing={2}>
       <Stack flex={1} className='p-10 gap-16'>
@@ -72,7 +78,7 @@ const DocumentUploadPage = () => {
                 id: (index + 1).toString(),
                 name: file.name,
                 size: bytesToSize(file.size, 2),
-                type: formatFileType(file.type),
+                type: formatFileType(file.name),
                 date: new Date(),
                 path: URL.createObjectURL(file)
               };
@@ -96,9 +102,16 @@ const DocumentUploadPage = () => {
         />
         {finishUpload && <CustomTable configs={documentUpLoadTabelConfig} rows={files} />}
         {files.length > 0 && (
-          <PreviewPdf open={pdfDialog.open} onClose={pdfDialog.handleClose} file={files[0]} />
+          <>
+            <PreviewPdf open={pdfDialog.open} onClose={pdfDialog.handleClose} file={files[0]} />
+            <WordPreviewDialog
+              open={wordDialog.open}
+              onClose={wordDialog.handleClose}
+              file={files[0]}
+            />
+          </>
         )}
-
+        <div id='container'></div>
         <Button
           variant='contained'
           startIcon={<DocumentUpload />}
