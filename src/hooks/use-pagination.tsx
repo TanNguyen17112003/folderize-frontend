@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
 
 interface UsePaginationProps {
   count: number;
@@ -10,21 +10,13 @@ export interface UsePaginationResult {
   page: number;
   rowsPerPage: number;
   totalPages: number;
-  onPageChange: (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => void;
-  onRowsPerPageChange: (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
+  onPageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
+  onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 
-function usePagination({
-  count,
-  initialRowsPerPage,
-}: UsePaginationProps): UsePaginationResult {
+function usePagination({ count, initialRowsPerPage }: UsePaginationProps): UsePaginationResult {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(initialRowsPerPage || 10);
+  const [rowsPerPage, setRowsPerPage] = useState(initialRowsPerPage || 5);
 
   const totalPages = Math.ceil(count / rowsPerPage);
 
@@ -49,7 +41,7 @@ function usePagination({
     rowsPerPage,
     totalPages,
     onPageChange,
-    onRowsPerPageChange,
+    onRowsPerPageChange
   };
 }
 

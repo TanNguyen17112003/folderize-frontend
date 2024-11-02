@@ -1,45 +1,41 @@
-import { RectangleGroupIcon, BookOpenIcon } from "@heroicons/react/24/solid";
-import { BookshelfFillIcon } from "src/components/icons/BookshelfFillIcon";
-import { IoPersonCircleOutline, IoFlag } from "react-icons/io5";
-import { paths } from "src/paths";
-import { FilesEarmarkFillIcon } from "src/components/icons/FilesEarmarkFillIcon";
-import { BsDoorOpen } from "react-icons/bs";
-
+import { paths } from 'src/paths';
+import { LogoutCurve, User, PresentionChart, Lock1, DocumentText } from 'iconsax-react';
 export const getDashboardAdminConfigs = () => {
   return [
     {
+      subheader: 'Quản lý',
       items: [
         {
-          title: "Trang chủ",
-          path: paths.dashboard.index,
-          icon: <RectangleGroupIcon className="h-6 w-6" />,
+          title: 'Thống kê',
+          path: paths.admin.index,
+          icon: <PresentionChart className='h-5 w-5' />
         },
         {
-          title: "Kho dữ liệu",
-          path: paths.dashboard.collections,
-          icon: <BookshelfFillIcon className="h-6 w-6" />,
+          title: 'Người dùng',
+          path: paths.admin['user-management'],
+          icon: <User className='h-5 w-5' />
         },
         {
-          title: "Quản lý tài khoản",
-          path: paths.dashboard.accounts,
-          icon: <IoPersonCircleOutline className="h-6 w-6" />,
+          title: 'Quyền truy cập',
+          path: paths.admin['access-control'],
+          icon: <Lock1 className='h-5 w-5' />
         },
         {
-          title: "Quản lý danh mục",
-          path: paths.dashboard.categories,
-          icon: <FilesEarmarkFillIcon className="h-6 w-6" />,
-        },
-        {
-          title: "Quản lý khiếu nại",
-          path: paths.dashboard.reports,
-          icon: <IoFlag className="h-6 w-6" />,
-        },
-        {
-          title: "Đăng xuất",
-          path: paths.dashboard.logout,
-          icon: <BsDoorOpen className="h-6 w-6" />,
-        },
-      ],
+          title: 'Tài liệu',
+          path: paths.documents.index,
+          icon: <DocumentText className='h-5 w-5' />
+        }
+      ]
     },
+    {
+      subheader: 'Hành động',
+      items: [
+        {
+          title: 'Đăng xuất',
+          path: paths.auth.logout,
+          icon: <LogoutCurve className='h-5 w-5' />
+        }
+      ]
+    }
   ];
 };

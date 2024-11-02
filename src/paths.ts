@@ -1,21 +1,34 @@
 export const paths = {
-  index: "/",
+  index: '/',
   auth: {
-    login: "/auth",
-    register: "/auth/register",
-    "forgot-password": "/auth/forgot-password",
-    "reset-password": "/auth/reset-password",
+    login: '/auth',
+    register: {
+      index: '/auth/register',
+      'complete-signup': '/auth/register/complete-signup'
+    },
+    'forgot-password': '/auth/forgot-password',
+    'reset-password': '/auth/reset-password',
+    logout: '/auth/logout'
   },
   dashboard: {
-    index: "/dashboard",
-    collections: "/dashboard/collections",
-    accounts: "/dashboard/accounts",
-    categories: "/dashboard/categories",
-    reports: "/dashboard/reports",
-    "add-report": "/dashboard/add-report",
-    logout: "/dang-xuat",
+    index: '/dashboard'
   },
-  401: "/401",
-  404: "/404",
-  500: "/500",
+  admin: {
+    index: '/admin',
+    'access-control': '/admin/access-control',
+    'user-management': '/admin/user-management'
+  },
+  employee: {
+    index: '/employee'
+  },
+  user: {
+    index: '/user'
+  },
+  documents: {
+    index: '/documents',
+    'documents-upload-page': '/documents/documents-upload-page'
+  },
+  401: '/401',
+  404: '/404',
+  500: '/500'
 };
