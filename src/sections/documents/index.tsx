@@ -6,7 +6,7 @@ import ContentHeader from 'src/components/content-header';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import type { Page as PageType } from 'src/types/page';
-
+import DocumentList from 'src/sections/documents/documents-list';
 const Page: PageType = () => {
   return (
     <Stack
@@ -40,6 +40,7 @@ const Page: PageType = () => {
           </Box>
         }
       />
+      <DocumentList />
     </Stack>
   );
 };
