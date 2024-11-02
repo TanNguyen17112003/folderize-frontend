@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Box,
   Stack,
   TextField,
   Button,
@@ -14,9 +13,11 @@ import * as Yup from 'yup';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import sigininBackground from 'public/ui/siginin_background.jpg';
+import { useRouter } from 'next/router';
 
 const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -29,7 +30,7 @@ const LoginForm: React.FC = () => {
       password: Yup.string().min(8, 'Mật khẩu phải có ít nhất 8 kí tự').required('Required')
     }),
     onSubmit: (values) => {
-      // console.log(values);
+      router.push('/#');
     }
   });
 
