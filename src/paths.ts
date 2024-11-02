@@ -26,7 +26,7 @@ export const paths = {
   },
   documents: {
     index: '/documents',
-    'upload-page': '/documents/documents-upload-page'
+    'documents-upload-page': '/documents/documents-upload-page'
   },
   401: '/401',
   404: '/404',
