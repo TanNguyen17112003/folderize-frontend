@@ -5,6 +5,7 @@ import { ArrowRight, Book, User, Building } from 'iconsax-react';
 import { useRouter } from 'next/router';
 import { paths } from 'src/paths';
 import backgroundRectangle from 'public/ui/background-rectangle.jpg';
+import DashboardFooter from './dashboard-footer';
 
 interface DashboardInfoProps {
   title: string;
@@ -68,7 +69,7 @@ function DashboardIndex() {
             color='info'
             fullWidth={false}
             endIcon={<ArrowRight />}
-            onClick={() => router.push(paths.admin['user-management'])}
+            onClick={() => router.push(paths.admin['access-control'])}
           >
             Khám phá
           </Button>
@@ -91,6 +92,7 @@ function DashboardIndex() {
           </Stack>
         ))}
       </Stack>
+      <DashboardFooter />
     </Box>
   );
 }

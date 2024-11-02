@@ -28,9 +28,7 @@ function UserManagementApproveDialog({
           }}
         >
           <Typography variant='h6'>
-            {'Chấp nhận quyền truy cập' + userAccess?.accessType === 'EDIT'
-              ? 'chỉnh sửa'
-              : 'truy cập' + 'tài liệu ' + userAccess?.documentName + ' ?'}
+            {`Chấp nhận quyền ${userAccess?.accessType === 'EDIT' ? 'chỉnh sửa' : 'truy cập'} tài liệu ${userAccess?.documentName} ?`}
           </Typography>
         </Box>
       </DialogTitle>

@@ -1,1 +1,1 @@
-export const SIDE_NAV_WIDTH = 300;
+export const SIDE_NAV_WIDTH = 280;

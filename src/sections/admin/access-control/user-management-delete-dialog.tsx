@@ -28,9 +28,7 @@ function UserManagementDeleteDialog({
           }}
         >
           <Typography variant='h6'>
-            {'Xoá quyền truy cập' + userAccess?.accessType === 'EDIT'
-              ? 'chỉnh sửa'
-              : 'truy cập' + 'tài liệu ' + userAccess?.documentName + ' ?'}
+            {`Xoá quyền ${userAccess?.accessType === 'EDIT' ? 'chỉnh sửa' : 'truy cập'} tài liệu ${userAccess?.documentName} ?`}
           </Typography>
         </Box>
       </DialogTitle>
