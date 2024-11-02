@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { ArrowBack, ArrowForward, ZoomIn, ZoomOut, Close } from '@mui/icons-material';
 import * as pdfjs from 'pdfjs-dist';
-import { FileWithId } from './documents-upload-page';
+import { FileWithId } from 'src/types/file-data';
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf/pdf.worker.min.mjs';
 

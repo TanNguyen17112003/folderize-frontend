@@ -1,7 +1,7 @@
 import { Stack } from '@mui/system';
 import ContentHeader from 'src/components/content-header';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
-import DocumentUploadPage from 'src/sections/documents/documents-upload-page';
+import DocumentUploadPage from 'src/sections/documents/documents-upload/documents-upload-page';
 import type { Page as PageType } from 'src/types/page';
 
 const Page: PageType = () => {

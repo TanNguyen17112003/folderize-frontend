@@ -2,41 +2,38 @@ import { Button, Chip, List, ListItem, Stack } from '@mui/material';
 import { Box } from '@mui/system';
 import { DocumentUpload } from 'iconsax-react';
 import { size } from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CustomTable } from 'src/components/custom-table';
 import FileDropzone from 'src/components/FileDropzone';
 import useAppSnackbar from 'src/hooks/use-app-snackbar';
 import { useDialog } from 'src/hooks/use-dialog';
+import { useDrawer } from 'src/hooks/use-drawer';
 import { bytesToSize } from 'src/utils/bytes-to-size';
 import { downloadUrl } from 'src/utils/url-handler';
 import getUploadDOcumentConfig from './documents-upload-config';
-import PreviewPdf from './previewPdf';
-import WordPreviewDialog from './previewWord';
-export interface FileWithId {
-  id: string;
-  name: string;
-  size: string;
-  type: string;
-  date: Date;
-  path: string;
-}
+import PreviewPdf from '../previewPdf';
+import WordPreviewDialog from '../previewWord';
+import DocumentsUploadDeleteDialog from './documetns-upload-delete-dialog';
+import DocumentsUploadEditDrawer from './documents-upload-edit-drawer';
+import { FileWithId } from 'src/types/file-data';
+import { FILE_TYPES } from 'src/utils/file-types';
 
-export const FILE_TYPES = [
-  { type: 'PDF', color: 'rgb(255,9,9)' },
-  { type: 'DOC', color: 'rgb(0,123,255)' },
-  { type: 'DOCX', color: 'rgb(23,162,184)' },
-  { type: 'XLS', color: 'rgb(40,167,69)' },
-  { type: 'XLSX', color: 'rgb(40,153,57)' },
-  { type: 'PPT', color: 'rgb(255,193,7)' },
-  { type: 'PPTX', color: 'rgb(255,163,7)' },
-  { type: 'TXT', color: 'rgb(108,117,125)' }
-];
 const DocumentUploadPage = () => {
   const [files, setFiles] = useState<FileWithId[]>([]);
   const [finishUpload, setFinishUpload] = useState(false);
   const pdfDialog = useDialog<FileWithId>();
   const wordDialog = useDialog<FileWithId>();
+  const deleteDocumentDialog = useDialog<FileWithId>();
+  const editDocumentDrawer = useDrawer<FileWithId>();
   const { showSnackbarError } = useAppSnackbar();
+
+  const handleDeleteFile = useCallback(
+    async (data: FileWithId) => {
+      const newFiles = await files.filter((file) => file.id !== data.id);
+      setFiles(newFiles);
+    },
+    [files, setFiles]
+  );
 
   const formatFileType = (name: string) => {
     const token = name.split('.');
@@ -45,8 +42,7 @@ const DocumentUploadPage = () => {
   const documentUpLoadTabelConfig = useMemo(() => {
     return getUploadDOcumentConfig({
       onClickDelete: (data) => {
-        const newFiles = files.filter((file) => file.id !== data.id);
-        setFiles(newFiles);
+        deleteDocumentDialog.handleOpen(data);
       },
       onClickReport(data) {
         if (data.type === 'PDF') {
@@ -54,6 +50,9 @@ const DocumentUploadPage = () => {
         } else if (data.type === 'DOCX' || data.type === 'DOC') {
           wordDialog.handleOpen(data);
         }
+      },
+      onClickEdit: (data) => {
+        editDocumentDrawer.handleOpen(data);
       }
     });
   }, [files, pdfDialog, wordDialog]);
@@ -128,6 +127,17 @@ const DocumentUploadPage = () => {
           Tải file lên
         </Button>
       </Stack>
+      <DocumentsUploadDeleteDialog
+        open={deleteDocumentDialog.open}
+        onClose={deleteDocumentDialog.handleClose}
+        onConfirm={() => handleDeleteFile(deleteDocumentDialog.data as FileWithId)}
+        data={deleteDocumentDialog.data as FileWithId}
+      />
+      <DocumentsUploadEditDrawer
+        open={editDocumentDrawer.open}
+        onClose={editDocumentDrawer.handleClose}
+        file={editDocumentDrawer.data as FileWithId}
+      />
     </Stack>
   );
 };

@@ -2,7 +2,8 @@ import { Typography, Stack, Chip } from '@mui/material';
 import { CustomTableConfig } from 'src/components/custom-table';
 import { Edit, DocumentText, Trash, Bank } from 'iconsax-react';
 import { formatDate, formatUnixTimestamp, formatVNDcurrency } from 'src/utils/format-time-currency';
-import { FILE_TYPES, FileWithId } from './documents-upload-page';
+import { FileWithId } from 'src/types/file-data';
+import { FILE_TYPES } from 'src/utils/file-types';
 
 const getUploadDOcumentConfig = ({
   onClickReport,
