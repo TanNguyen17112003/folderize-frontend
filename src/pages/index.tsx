@@ -1,10 +1,11 @@
-import { useRouter } from "next/router";
-import { Layout as DashboardLayout } from "src/layouts/dashboard";
-import type { Page as PageType } from "src/types/page";
+import { useRouter } from 'next/router';
+import { Layout as DashboardLayout } from 'src/layouts/dashboard';
+import type { Page as PageType } from 'src/types/page';
 
 const Page: PageType = () => {
   const router = useRouter();
-  router.replace("/dashboard");
+  router.replace('/signup1');
+  // da chinh sang login
 
   return <></>;
 };
