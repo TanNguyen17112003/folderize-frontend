@@ -1,19 +1,7 @@
-import { Stack } from '@mui/material';
-import LoginForm from 'src/sections/auth';
+import React from 'react';
 
-const Page = () => {
-  return (
-    <Stack
-      sx={{
-        maxHeight: '100vh',
-        overflow: 'auto',
-        bgcolor: 'white'
-      }}
-      className='min-h-screen'
-    >
-      <LoginForm />
-    </Stack>
-  );
-};
+function Index() {
+  return <div>Index</div>;
+}
 
-export default Page;
+export default Index;
