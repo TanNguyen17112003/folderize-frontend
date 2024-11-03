@@ -13,7 +13,7 @@ const DisplayRowsConfig: FC<DisplayRowsConfigProps> = ({ rowData }) => {
       { label: 'Description', value: rowData.description },
       { label: 'Label', value: <Chip label={rowData.label} color='success' /> },
       { label: 'Category', value: rowData.category },
-      { label: 'Keywords', value: rowData.keyword },
+      { label: 'Keywords', value: rowData.keywords },
       { label: 'Type', value: rowData.type },
       { label: 'File Size', value: rowData.fileSize }
     ];
