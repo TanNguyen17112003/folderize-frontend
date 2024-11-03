@@ -9,6 +9,16 @@ export interface Document {
   keywords: string;
 }
 
+export interface DocumentDetail1 {
+  author: string;
+  label: string;
+  category: string;
+  keyword: string;
+  type: string;
+  fileSize: string;
+  title: string;
+}
+
 export interface DocumentDetail extends Document {}
 export const docData: Document[] = [
   {

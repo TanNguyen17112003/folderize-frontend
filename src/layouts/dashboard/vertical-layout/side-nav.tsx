@@ -130,8 +130,7 @@ export const SideNav: FC<SideNavProps> = (props) => {
                   <Box className='flex gap-2 items-center'>
                     <Avatar />
                     <Stack>
-                      {user && <Typography>{user.full_name}</Typography>}
-
+                      {user && <Typography>{user.fullName}</Typography>}
                       {user && (
                         <Typography className='text-xs opacity-60'>
                           {user?.role === 'USER' || !user.role
