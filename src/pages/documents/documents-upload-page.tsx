@@ -3,8 +3,10 @@ import ContentHeader from 'src/components/content-header';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import DocumentUploadPage from 'src/sections/documents/documents-upload/documents-upload-page';
 import type { Page as PageType } from 'src/types/page';
+import { useAuth } from 'src/hooks/use-auth';
 
 const Page: PageType = () => {
+  const { user } = useAuth();
   return (
     <Stack
       sx={{

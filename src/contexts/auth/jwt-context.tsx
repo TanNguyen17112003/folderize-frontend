@@ -135,7 +135,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         } catch {}
         if (!user) {
           user = await JSON.parse(localStorage.getItem('user_data') || '{}');
-          if (!user || !user.id || !user.role || !user.full_name) {
+          if (!user || !user.id || !user.role || !user.fullName) {
             throw new Error('Ger user failed.');
           }
         }
@@ -178,9 +178,14 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   const signIn = useCallback(
     async (email: string, password: string): Promise<UserDetail> => {
       const response = await UsersApi.signIn({ email, password });
-
+      const responseData = {
+        email: response.email,
+        fullName: response.fullName,
+        phone: response.phone,
+        role: response.role
+      };
       CookieHelper.setItem(CookieKeys.TOKEN, response.token);
-      CookieHelper.setItem('user_data', JSON.stringify(response));
+      CookieHelper.setItem('user_data', JSON.stringify(responseData));
 
       dispatch({
         type: ActionType.SIGN_IN,
@@ -209,7 +214,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         payload: {
           user: {
             id: response.id,
-            full_name: response.full_name,
+            fullName: response.fullName,
             created_at: response.created_at,
             email: response.email,
             phone: response.phone,

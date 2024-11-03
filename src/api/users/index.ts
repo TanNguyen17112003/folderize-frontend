@@ -19,6 +19,14 @@ export type SignUpRequest = {
   token: string;
 };
 
+export interface AdminSignUpRequest extends SignUpRequest {
+  organizationName: string;
+  organizationCode: string;
+  departmentType: string;
+  organizationPhone: string;
+  address: string;
+}
+
 type SignUpResponse = Promise<{
   accessToken: string;
 }>;
@@ -40,8 +48,17 @@ export class UsersApi {
     return await apiPost('/auth/signup/initiate', request);
   }
 
+  static async initiateAdminSignUp(request: InitialSignUpRequest): Promise<void> {
+    return await apiPost('/auth/admin/signup/initiate', request);
+  }
+
   static async completeSignUp(request: SignUpRequest): Promise<UserDetail> {
     const response = await apiPost('/auth/signup/complete', request);
+    return response;
+  }
+
+  static async completeAdminSignUp(request: AdminSignUpRequest): Promise<UserDetail> {
+    const response = await apiPost('/auth/admin/signup/complete', request);
     return response;
   }
 
