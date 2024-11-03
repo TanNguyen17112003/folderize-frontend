@@ -4,7 +4,7 @@ import type { Page as PageType } from 'src/types/page';
 
 const Page: PageType = () => {
   const router = useRouter();
-  router.replace('/signup1');
+  router.replace('/dashboard');
   // da chinh sang login
 
   return <></>;
