@@ -1,12 +1,17 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, Typography } from '@mui/material';
-import React, { memo } from 'react';
+import React, { FC, memo } from 'react';
 import { Button } from 'src/components/shadcn/ui/button';
 import { rowData } from 'src/types/document';
 import type { Page as PageType } from 'src/types/page';
 import DisplayRowsConfig from './details-doc-table-config';
 
-const DetailsTable: PageType = memo(() => {
+interface DetailsTableProps {
+  documentID: string;
+}
+
+
+const DetailsTable: FC<DetailsTableProps> = memo((props: DetailsTableProps) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row', py: 4 }}>
       <Box sx={{ flex: 1 }}>
@@ -36,6 +41,6 @@ const DetailsTable: PageType = memo(() => {
   );
 });
 
-DetailsTable.getLayout = (page) => <>{page}</>;
+(DetailsTable as PageType).getLayout = (page) => <>{page}</>;
 
 export default DetailsTable;

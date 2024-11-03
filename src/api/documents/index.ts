@@ -2,9 +2,9 @@ import { FileData } from 'src/types/file-data';
 import { DocumentDetail, Document } from 'src/types/document';
 import { apiGet, apiPost, apiDelete, getFormData } from 'src/utils/api-request';
 
-export class DocumentsApi {
+export default class DocumentsApi {
   static async getDocuments(request: {}) {
-    return await apiGet('/files', request);
+    return await apiGet('/documents', request);
   }
 
   static async uploadDocument(request: { file: File }): Promise<DocumentDetail> {

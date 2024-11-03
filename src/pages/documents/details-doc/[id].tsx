@@ -1,19 +1,32 @@
-import { Box, Container } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import { memo, useMemo } from 'react';
+import { useRouter } from 'next/router';
 import CustomTabs, { TabOption } from 'src/components/CustomTabs/CustomTabs';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import type { Page as PageType } from 'src/types/page';
-import Comments from '../../../sections/documents/comments';
-import DetailsTable from '../../../sections/documents/details';
-import VersionsTable from '../../../sections/documents/versions';
+import Comments from 'src/sections/documents/comments';
+import DetailsTable from 'src/sections/documents/details';
+import VersionsTable from 'src/sections/documents/versions';
 
-const DashboardPage: PageType = memo(() => {
+const DocumentDetailsPage: PageType = memo(() => {
+  const router = useRouter();
+  const { id } = router.query;
+  if (!id) {
+    return (
+      <Container maxWidth='lg'>
+        <Box sx={{ py: 4 }}>
+          <Typography>Document not found</Typography>
+        </Box>
+      </Container>
+    );
+  }
+
   const options: TabOption[] = useMemo(
     () => [
       {
         value: 'details',
         label: 'Details',
-        content: <DetailsTable />
+        content: <DetailsTable documentID={id.toString()} />
       },
       {
         value: 'versions',
@@ -26,7 +39,7 @@ const DashboardPage: PageType = memo(() => {
         content: <Comments />
       }
     ],
-    []
+    [id]
   );
 
   return (
@@ -37,7 +50,6 @@ const DashboardPage: PageType = memo(() => {
     </Container>
   );
 });
+DocumentDetailsPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-DashboardPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
-
-export default DashboardPage;
+export default DocumentDetailsPage;
