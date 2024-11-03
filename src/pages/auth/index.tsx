@@ -68,9 +68,9 @@ const Page: PageType = () => {
   }, [formik.values.email, formik.values.password]);
 
   return (
-    <Box className='h-screen flex bg-white items-center text-black'>
-      <Box width='40%' className='flex justify-center bg-[#f3f5fb] min-h-screen items-center'>
-        <Box width={'70%'} className='flex flex-col gap-5'>
+    <Box className='h-screen flex bg-white items-center text-black flex flex-col sm:flex-row'>
+      <Box className='flex justify-center bg-[#f3f5fb] min-h-screen items-center md:w-[40%] w-full sm:w-full'>
+        <Box className='flex flex-col gap-5 md:w-[70%] sm:max-w-1/2'>
           <Stack
             direction={'row'}
             spacing={1}
@@ -82,7 +82,7 @@ const Page: PageType = () => {
             <Typography>Trang chủ</Typography>
           </Stack>
           <Typography variant='h3'>Đăng nhập</Typography>
-          <form onSubmit={formik.handleSubmit} className='flex flex-col gap-3 w-full'>
+          <form onSubmit={formik.handleSubmit} className='flex flex-col gap-3 w-full '>
             <Box className='flex flex-col gap-1'>
               <Typography
                 fontWeight={'bold'}
@@ -155,7 +155,7 @@ const Page: PageType = () => {
           </Box>
         </Box>
       </Box>
-      <Box>
+      <Box className='hidden sm:block'>
         <Image src={backgroundImage} alt='background' />
       </Box>
     </Box>
