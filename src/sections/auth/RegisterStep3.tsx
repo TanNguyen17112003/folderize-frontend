@@ -40,17 +40,13 @@ function RegisterStep3() {
   const formik = useFormik<SignUpFormProps & { confirmPassword: string }>({
     initialValues: {
       phone: '',
-      full_name: '',
+      fullName: '',
       password: '',
       confirmPassword: ''
     },
     validationSchema: Yup.object({
-      firstName: Yup.string().required('Tên không được để trống'),
-      full_name: Yup.string().required('Họ không được để trống'),
+      fullName: Yup.string().required('Họ không được để trống'),
       phone: Yup.string().required('Số điện thoại không được để trống'),
-      dormitory: Yup.string().required('Kí túc xá không được để trống'),
-      room: Yup.string().required('Phòng không được để trống'),
-      building: Yup.string().required('Tòa nhà không được để trống'),
       password: Yup.string().required('Mật khẩu không được để trống'),
       confirmPassword: Yup.string()
         .required('Nhập lại mật khẩu không được để trống')
@@ -60,7 +56,7 @@ function RegisterStep3() {
       async (values) => {
         try {
           const signUpData = {
-            full_name: values.full_name,
+            fullName: values.fullName,
             phone: values.phone,
             password: values.password,
             token: router.query.token as string
@@ -83,9 +79,9 @@ function RegisterStep3() {
           <FormInput
             type='text'
             className='w-full px-3 rounded-lg bg-white'
-            {...formik.getFieldProps('full_name')}
-            error={formik.touched.full_name && !!formik.errors.full_name}
-            helperText={formik.touched.full_name && formik.errors.full_name}
+            {...formik.getFieldProps('fullName')}
+            error={formik.touched.fullName && !!formik.errors.fullName}
+            helperText={formik.touched.fullName && formik.errors.fullName}
           />
         </Box>
 
