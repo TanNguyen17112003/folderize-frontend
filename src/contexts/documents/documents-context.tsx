@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useCallback, useEffect, useContext } from 'react';
-import { DocumentsApi } from 'src/api/documents';
+import { DocumentsApi, UploadDocumentRequest } from 'src/api/documents';
 import useFunction, {
   DEFAULT_FUNCTION_RETURN,
   UseFunctionReturnType
@@ -9,42 +9,20 @@ import { DocumentDetail, Document } from 'src/types/document';
 interface ContextValue {
   getDocumentsApi: UseFunctionReturnType<FormData, DocumentDetail[]>;
 
-  createDocument: (requests: File) => Promise<void>;
   updateDocument: (User: Partial<DocumentDetail>) => Promise<void>;
   deleteDocument: (ids: Document['id'][]) => Promise<void>;
+  uploadDocument: (requests: UploadDocumentRequest) => Promise<void>;
 }
 
 export const DocumentsContext = createContext<ContextValue>({
   getDocumentsApi: DEFAULT_FUNCTION_RETURN,
-
-  createDocument: async () => {},
   updateDocument: async () => {},
-  deleteDocument: async () => {}
+  deleteDocument: async () => {},
+  uploadDocument: async () => {}
 });
 
 const DocumentsProvider = ({ children }: { children: ReactNode }) => {
   const getDocumentsApi = useFunction(DocumentsApi.getDocuments);
-
-  const createDocument = useCallback(
-    async (request: File) => {
-      try {
-        const user = await DocumentsApi.uploadDocument({ file: request });
-        if (user) {
-          const newUsers: DocumentDetail[] = [
-            {
-              ...request,
-              id: user.id
-            },
-            ...(getDocumentsApi.data || [])
-          ];
-          getDocumentsApi.setData(newUsers);
-        }
-      } catch (error) {
-        throw error;
-      }
-    },
-    [getDocumentsApi]
-  );
 
   const updateDocument = useCallback(
     async (Document: Partial<Document>) => {
@@ -88,6 +66,26 @@ const DocumentsProvider = ({ children }: { children: ReactNode }) => {
     [getDocumentsApi]
   );
 
+  const uploadDocument = useCallback(
+    async (request: UploadDocumentRequest) => {
+      try {
+        const user = await DocumentsApi.uploadDocument(request);
+        if (user) {
+          const newUsers: DocumentDetail[] = [
+            {
+              ...request,
+              id: user.id
+            },
+            ...(getDocumentsApi.data || [])
+          ];
+          getDocumentsApi.setData(newUsers);
+        }
+      } catch (error) {
+        throw error;
+      }
+    },
+    [getDocumentsApi]
+  );
   useEffect(() => {
     getDocumentsApi.call(new FormData());
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -97,10 +95,9 @@ const DocumentsProvider = ({ children }: { children: ReactNode }) => {
     <DocumentsContext.Provider
       value={{
         getDocumentsApi,
-
-        createDocument,
         updateDocument,
-        deleteDocument
+        deleteDocument,
+        uploadDocument
       }}
     >
       {children}

@@ -15,18 +15,22 @@ import PreviewPdf from '../previewPdf';
 import WordPreviewDialog from '../previewWord';
 import DocumentsUploadDeleteDialog from './documetns-upload-delete-dialog';
 import DocumentsUploadEditDrawer from './documents-upload-edit-drawer';
-import { FileWithId } from 'src/types/file-data';
+import { FileFormProps, FileWithId } from 'src/types/file-data';
 import { FILE_TYPES } from 'src/utils/file-types';
+import useFunction from 'src/hooks/use-function';
+import { DocumentsApi, UploadDocumentRequest } from 'src/api/documents';
 
 const DocumentUploadPage = () => {
   const [files, setFiles] = useState<FileWithId[]>([]);
+  const [originalFiles, setOriginalFiles] = useState<File[]>([]);
+  const [uploadFile, setUploadFile] = useState<UploadDocumentRequest>();
   const [finishUpload, setFinishUpload] = useState(false);
+  const [completeFillDrawer, setCompleteFillDrawer] = useState(false);
   const pdfDialog = useDialog<FileWithId>();
   const wordDialog = useDialog<FileWithId>();
   const deleteDocumentDialog = useDialog<FileWithId>();
   const editDocumentDrawer = useDrawer<FileWithId>();
   const { showSnackbarError } = useAppSnackbar();
-
   const handleDeleteFile = useCallback(
     async (data: FileWithId) => {
       const newFiles = await files.filter((file) => file.id !== data.id);
@@ -63,6 +67,22 @@ const DocumentUploadPage = () => {
       setFinishUpload(false);
     }
   }, [files, showSnackbarError]);
+  const uploadDocument = useCallback(async () => {
+    try {
+      console.log(uploadFile);
+      if (!uploadFile) {
+        showSnackbarError('Vui lòng nhập thông tin tài liệu');
+        return;
+      }
+      const result = await DocumentsApi.uploadDocument(uploadFile);
+      console.log(result);
+    } catch (error) {
+      throw error;
+    }
+  }, [showSnackbarError, uploadFile]);
+  const uploadDocumentHelper = useFunction(uploadDocument, {
+    successMessage: 'Tải tài liệu thành công!'
+  });
   return (
     <Stack spacing={2}>
       <Stack flex={1} className='p-10 gap-16'>
@@ -92,6 +112,7 @@ const DocumentUploadPage = () => {
               };
             });
             setFiles(newFiles);
+            setOriginalFiles(files);
           }}
           renderSubtitle={
             <List className='flex items-center gap-4 max-md:flex-col'>
@@ -123,11 +144,12 @@ const DocumentUploadPage = () => {
           startIcon={<DocumentUpload />}
           color='primary'
           className='w-[200px] self-end'
+          disabled={size(files) === 0 || !completeFillDrawer}
           onClick={() => {
             if (size(files) === 0) {
               showSnackbarError('Vui lòng tải lên file trước khi tải xuống');
             } else {
-              downloadUrl('file.txt');
+              uploadDocumentHelper.call([]);
             }
           }}
         >
@@ -144,6 +166,19 @@ const DocumentUploadPage = () => {
         open={editDocumentDrawer.open}
         onClose={editDocumentDrawer.handleClose}
         file={editDocumentDrawer.data as FileWithId}
+        onSubmit={(data) => {
+          const uploadFile = {
+            file: originalFiles[0],
+            data: JSON.stringify({
+              title: data.title,
+              description: data.description,
+              category: data.category,
+              keywords: data.keywords.join(', ')
+            })
+          };
+          setUploadFile(uploadFile);
+          setCompleteFillDrawer(true);
+        }}
       />
     </Stack>
   );
