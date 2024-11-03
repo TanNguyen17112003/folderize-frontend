@@ -82,15 +82,15 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
         </div>
       ) : (
         <>
-          <div className='flex gap-4 items-centers w-4/5 '>
+          <div className='flex gap-4 items-centers max-lg:flex-col '>
             <div>
-              <div className='rounded-full p-5 bg-gray-200'>
+              <div className='rounded-full p-5 bg-gray-200 flex items-center justify-center'>
                 <BiUpload className='w-7 h-7 fill-gray-500' />
               </div>
             </div>
-            <div className='flex flex-col items-start flex-1  '>
-              <p className='text-lg font-medium mb-1'>{title}</p>
-              <div className='flex items-center gap-2  w-full '>
+            <div className='flex flex-col items-start flex-1 max-lg:items-center  '>
+              <p className='text-lg font-medium mb-1 basis-1/4'>{title}</p>
+              <div className='flex items-center gap-2 basis-3/4 max-lg:flex-col'>
                 <p className='text-gray-600'>{subtitle}</p>
                 {renderSubtitle}
               </div>

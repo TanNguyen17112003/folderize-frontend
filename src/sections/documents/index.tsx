@@ -33,7 +33,7 @@ const Page: PageType = () => {
               color='success'
               startIcon={<Add />}
               LinkComponent={Link}
-              href={paths.documents['upload-page']}
+              href={paths.documents['documents-upload-page']}
             >
               Tải lên tài liệu
             </Button>
