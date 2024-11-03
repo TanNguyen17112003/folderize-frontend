@@ -16,6 +16,9 @@ const config = {
       }
     },
     extend: {
+      backgroundImage: {
+        'auth-background': "url('/public/ui/background-auth-5.png')",
+      },
       fontFamily: {
         sans: ['Roboto', 'sans-serif'],
         mono: ['Roboto Mono', 'monospace']
