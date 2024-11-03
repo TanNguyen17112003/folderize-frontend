@@ -18,18 +18,21 @@ import useFunction from 'src/hooks/use-function';
 import { FileWithId } from 'src/types/file-data';
 import { FileFormProps, initialFileForm } from 'src/types/file-data';
 import AutocompleteTextFieldMultiple from 'src/components/Autocomplete/autocomplete-textfield-multiple';
+import { t } from 'i18next';
 
 function DocumentsUploadEditDrawer({
   open,
   onClose,
-  file
+  file,
+  onSubmit
 }: {
   open: boolean;
   onClose: () => void;
   file: FileWithId;
+  onSubmit: (data: FileFormProps) => void;
 }) {
   const handleSubmitFile = async (values: FileFormProps) => {
-    console.log('values', values);
+    onSubmit(values);
   };
   const handleSubmitFileHelper = useFunction(handleSubmitFile, {
     successMessage: 'Cập nhật thông tin tài liệu thành công!'

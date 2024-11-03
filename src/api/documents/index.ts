@@ -1,14 +1,17 @@
 import { FileData } from 'src/types/file-data';
 import { DocumentDetail, Document } from 'src/types/document';
 import { apiGet, apiPost, apiDelete, getFormData } from 'src/utils/api-request';
-
+export interface UploadDocumentRequest {
+  file: File;
+  data: string;
+}
 export class DocumentsApi {
   static async getDocuments(request: {}) {
     return await apiGet('/files', request);
   }
 
-  static async uploadDocument(request: { file: File }): Promise<DocumentDetail> {
-    return await apiPost('/files/upload', getFormData(request));
+  static async uploadDocument(request: UploadDocumentRequest): Promise<DocumentDetail> {
+    return await apiPost('/documents', getFormData(request));
   }
 
   static async downloadDocuments(request: Partial<DocumentDetail & Pick<DocumentDetail, 'id'>>) {
