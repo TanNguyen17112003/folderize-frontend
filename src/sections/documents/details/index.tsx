@@ -2,7 +2,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Box, Typography } from '@mui/material';
 import React, { memo } from 'react';
 import { Button } from 'src/components/shadcn/ui/button';
-import { rowData } from 'src/types/document';
+// import { rowData } from 'src/types/document';
 import type { Page as PageType } from 'src/types/page';
 import DisplayRowsConfig from './details-doc-table-config';
 
@@ -14,12 +14,12 @@ const DetailsTable: PageType = memo(() => {
           Document Viewer
           {/* <DocViewer ... /> */}
         </Box>
-        <Typography variant='h6'>{rowData.title}</Typography>
+        {/* <Typography variant='h6'>{rowData.title}</Typography> */}
       </Box>
 
-      <Box sx={{ flex: 1 }}>
+      {/* <Box sx={{ flex: 1 }}>
         <DisplayRowsConfig rowData={rowData} />
-      </Box>
+      </Box> */}
 
       <Button
         variant='default'

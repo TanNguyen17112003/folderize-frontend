@@ -1,16 +1,15 @@
 import { Box, Chip, Stack, Typography } from '@mui/material';
 import React, { FC, useMemo } from 'react';
-import { DocumentDetail } from 'src/types/document';
+import { DocumentDetail1 } from 'src/types/document';
 
 type DisplayRowsConfigProps = {
-  rowData: DocumentDetail;
+  rowData: DocumentDetail1;
 };
 
 const DisplayRowsConfig: FC<DisplayRowsConfigProps> = ({ rowData }) => {
   const displayrowData = useMemo(() => {
     return [
       { label: 'Author', value: rowData.author },
-      { label: 'Description', value: rowData.description },
       { label: 'Label', value: <Chip label={rowData.label} color='success' /> },
       { label: 'Category', value: rowData.category },
       { label: 'Keywords', value: rowData.keyword },

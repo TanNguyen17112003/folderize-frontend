@@ -1,10 +1,11 @@
-import { Box, Button, Divider, Stack, Typography } from '@mui/material';
+import { Box, Button, Checkbox, FormControlLabel, Typography } from '@mui/material';
 import FormInput from 'src/components/ui/FormInput';
 import { useFormik } from 'formik';
 import React, { useCallback } from 'react';
 import * as Yup from 'yup';
 import { useAuth } from 'src/hooks/use-auth';
 import useFunction from 'src/hooks/use-function';
+import { UsersApi } from 'src/api/users';
 
 const validationSchema = Yup.object({
   email: Yup.string().email('Địa chỉ email không hợp lệ').required('Email không được để trống')
@@ -16,16 +17,22 @@ interface RegisterStep1Props {
 
 function RegisterStep1({ onNextStep }: RegisterStep1Props) {
   const { initiateSignUp } = useAuth();
+  const [isAdmin, setIsAdmin] = React.useState(false);
+
   const handleInitiateSignUp = useCallback(
     async (email: string) => {
       try {
-        await initiateSignUp({ email });
+        if (isAdmin) {
+          await UsersApi.initiateAdminSignUp({ email });
+        } else {
+          await initiateSignUp({ email });
+        }
         onNextStep(); // Call the callback function to navigate to the next step
       } catch (error: any) {
         console.error(error);
       }
     },
-    [initiateSignUp, onNextStep]
+    [initiateSignUp, onNextStep, isAdmin]
   );
 
   const handleInitiateSignUpHelper = useFunction(handleInitiateSignUp, {
@@ -63,6 +70,16 @@ function RegisterStep1({ onNextStep }: RegisterStep1Props) {
           helperText={formik.touched.email && formik.errors.email}
         />
         <Typography variant='body2'>Nhập địa chỉ email của bạn</Typography>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={isAdmin}
+              onChange={(e) => setIsAdmin(e.target.checked)}
+              color='primary'
+            />
+          }
+          label='Đăng ký với tư cách quản trị viên'
+        />
         <Button
           className='mt-2 bg-green-400 hover:shadow-sm hover:bg-green-500'
           type='submit'

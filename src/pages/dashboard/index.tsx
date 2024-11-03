@@ -3,8 +3,10 @@ import type { Page as PageType } from 'src/types/page';
 import { Box, Stack } from '@mui/material';
 import ContentHeader from 'src/components/content-header';
 import DashboardIndex from 'src/sections/dashboard';
+import { useAuth } from 'src/hooks/use-auth';
 
 const Page: PageType = () => {
+  const { user } = useAuth();
   return (
     <Stack
       sx={{
