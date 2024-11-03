@@ -100,7 +100,7 @@ export const SideNav: FC<SideNavProps> = (props) => {
                         </Button>
                       </Stack>
                     )}
-                    {user?.role === 'USER' && (
+                    {(user?.role === 'USER' || !user.role) && (
                       <Tooltip title='Thông báo' className='cursor-pointer'>
                         <Badge
                           badgeContent={0}
@@ -134,8 +134,8 @@ export const SideNav: FC<SideNavProps> = (props) => {
 
                       {user && (
                         <Typography className='text-xs opacity-60'>
-                          {user?.role === 'USER'
-                            ? 'Người dung'
+                          {user?.role === 'USER' || !user.role
+                            ? 'Người dùng'
                             : user?.role === 'EMPLOYEE'
                               ? 'Nhân viên'
                               : 'Quản trị viên'}

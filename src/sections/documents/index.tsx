@@ -6,7 +6,7 @@ import ContentHeader from 'src/components/content-header';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import type { Page as PageType } from 'src/types/page';
-
+import DocumentList from 'src/sections/documents/documents-list';
 const Page: PageType = () => {
   return (
     <Stack
@@ -33,13 +33,14 @@ const Page: PageType = () => {
               color='success'
               startIcon={<Add />}
               LinkComponent={Link}
-              href={paths.documents['upload-page']}
+              href={paths.documents['documents-upload-page']}
             >
               Tải lên tài liệu
             </Button>
           </Box>
         }
       />
+      <DocumentList />
     </Stack>
   );
 };

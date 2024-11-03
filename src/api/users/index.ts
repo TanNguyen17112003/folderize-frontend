@@ -13,7 +13,7 @@ export type InitialSignUpRequest = {
 type SignInResponse = UserDetail & { token: string };
 
 export type SignUpRequest = {
-  full_name: string;
+  fullName: string;
   password: string;
   phone: string;
   token: string;
@@ -25,7 +25,7 @@ type SignUpResponse = Promise<{
 
 export class UsersApi {
   static async signIn(request: SignInRequest): Promise<SignInResponse> {
-    return await apiPost('/users/login', request);
+    return await apiPost('/auth/signin', request);
   }
 
   static async signUp(request: SignUpRequest): Promise<SignUpResponse> {

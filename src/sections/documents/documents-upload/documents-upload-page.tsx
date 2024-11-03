@@ -55,7 +55,7 @@ const DocumentUploadPage = () => {
         editDocumentDrawer.handleOpen(data);
       }
     });
-  }, [files, pdfDialog, wordDialog]);
+  }, [deleteDocumentDialog, editDocumentDrawer, pdfDialog, wordDialog]);
   useEffect(() => {
     if (files.length > 0) {
       setFinishUpload(true);
@@ -68,7 +68,16 @@ const DocumentUploadPage = () => {
       <Stack flex={1} className='p-10 gap-16'>
         <FileDropzone
           title='Nhấn tải lên file tài liệu'
-          accept={{ '*/*': [] }}
+          accept={{
+            'application/pdf': ['.pdf'],
+            'application/msword': ['.doc'],
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+            'application/vnd.ms-excel': ['.xls'],
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+            'application/vnd.ms-powerpoint': ['.ppt'],
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation': ['.pptx'],
+            'text/plain': ['.txt']
+          }}
           subtitle='Hỗ trợ tải các loại file như:'
           fileCount={files.length}
           onUpload={(files) => {
@@ -85,18 +94,16 @@ const DocumentUploadPage = () => {
             setFiles(newFiles);
           }}
           renderSubtitle={
-            <Box className='flex items-center'>
-              <List className='flex items-center gap-4'>
-                {FILE_TYPES.map((fileType) => (
-                  <ListItem key={fileType.type} className='!p-0'>
-                    <Chip
-                      label={fileType.type}
-                      sx={{ backgroundColor: fileType.color, color: 'white' }}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
+            <List className='flex items-center gap-4 max-md:flex-col'>
+              {FILE_TYPES.map((fileType) => (
+                <ListItem key={fileType.type} disablePadding={true}>
+                  <Chip
+                    label={fileType.type}
+                    sx={{ backgroundColor: fileType.color, color: 'white' }}
+                  />
+                </ListItem>
+              ))}
+            </List>
           }
         />
         {finishUpload && <CustomTable configs={documentUpLoadTabelConfig} rows={files} />}
