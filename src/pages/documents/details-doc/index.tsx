@@ -3,9 +3,9 @@ import { memo, useMemo } from 'react';
 import CustomTabs, { TabOption } from 'src/components/CustomTabs/CustomTabs';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import type { Page as PageType } from 'src/types/page';
-import Comments from './comments';
-import DetailsTable from './details';
-import VersionsTable from './versions';
+import Comments from '../../../sections/documents/comments';
+import DetailsTable from '../../../sections/documents/details';
+import VersionsTable from '../../../sections/documents/versions';
 
 const DashboardPage: PageType = memo(() => {
   const options: TabOption[] = useMemo(

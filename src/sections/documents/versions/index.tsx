@@ -2,35 +2,9 @@ import { Box, Button } from '@mui/material';
 import React, { memo, useMemo } from 'react';
 import { CustomTable } from 'src/components/custom-table';
 import type { Page as PageType } from 'src/types/page';
+import { VersionList } from 'src/types/versions';
 
 const VersionsTable: PageType = memo(() => {
-  const rows = [
-    {
-      id: 'v1',
-      version: '1.0',
-      updated_at: '2023-07-01',
-      changes: 'Initial release with core content',
-      author: 'John Doe',
-      docUrl: '/#'
-    },
-    {
-      id: 'v2',
-      version: '1.1',
-      updated_at: '2023-09-15',
-      changes: 'Added additional examples and updated formatting',
-      author: 'Jane Smith',
-      docUrl: '/#'
-    },
-    {
-      id: 'v3',
-      version: '2.0',
-      updated_at: '2024-01-10',
-      changes: 'Major update with new chapters and sections',
-      author: 'John Doe',
-      docUrl: '/#'
-    }
-  ];
-
   const configs = useMemo(
     () => [
       { key: 'version', headerLabel: 'Version' },
@@ -48,7 +22,7 @@ const VersionsTable: PageType = memo(() => {
   return (
     <Box sx={{ py: 4 }}>
       <CustomTable
-        rows={rows}
+        rows={VersionList}
         configs={configs}
         renderRowActions={(row) => (
           <Button variant='outlined' onClick={() => handleViewDoc(row.docUrl)}>
