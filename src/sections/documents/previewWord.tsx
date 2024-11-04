@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import * as docx from 'docx-preview';
-import { FileWithId } from './documents-upload/documents-upload-page';
+import { FileWithId } from 'src/types/file-data';
 
 interface WordPreviewDialogProps {
   open: boolean;

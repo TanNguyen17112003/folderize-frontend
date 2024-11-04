@@ -4,6 +4,7 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import DocumentUploadPage from 'src/sections/documents/documents-upload/documents-upload-page';
 import type { Page as PageType } from 'src/types/page';
 import { useAuth } from 'src/hooks/use-auth';
+import DocumentsProvider from 'src/contexts/documents/documents-context';
 
 const Page: PageType = () => {
   const { user } = useAuth();
@@ -22,6 +23,10 @@ const Page: PageType = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+Page.getLayout = (page) => (
+  <DashboardLayout>
+    <DocumentsProvider>{page}</DocumentsProvider>
+  </DashboardLayout>
+);
 
 export default Page;

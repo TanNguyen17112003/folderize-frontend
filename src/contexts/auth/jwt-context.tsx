@@ -126,12 +126,14 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
   const initialize = useCallback(async (): Promise<void> => {
     try {
       const accessToken = CookieHelper.getItem(CookieKeys.TOKEN);
+      const userData = CookieHelper.getItem('user_data');
       console.log('accessToken', accessToken);
+      console.log('user_data', userData);
 
-      if (accessToken) {
+      if (accessToken && userData) {
         let user: UserDetail | undefined = undefined;
         try {
-          user = await UsersApi.me();
+          user = JSON.parse(userData);
         } catch {}
         if (!user) {
           user = await JSON.parse(localStorage.getItem('user_data') || '{}');

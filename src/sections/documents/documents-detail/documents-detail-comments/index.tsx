@@ -5,7 +5,7 @@ import { Button } from 'src/components/shadcn/ui/button';
 import { Textarea } from 'src/components/shadcn/ui/textarea';
 import { CommentsList } from 'src/types/comments';
 import type { Page as PageType } from 'src/types/page';
-import CommentItem from './commentItem';
+import CommentItem from './documents-detail-comments-item';
 
 const Comments: PageType = memo(() => {
   const [commentInput, setCommentInput] = useState<string>('');
@@ -26,7 +26,7 @@ const Comments: PageType = memo(() => {
         <Stack direction='row' alignItems='center' className='mb-4'>
           <Avatar src={currentUser.avatar} alt={currentUser.name} className='w-8 h-8 mr-3' />
           <Typography variant='body2' className='text-sm text-gray-700'>
-            Commenting as{' '}
+            Bình luận như {''}
             <Typography component='span' variant='body2' className='font-semibold'>
               {currentUser.name === 'RealNameOfUser' ? 'You' : currentUser.name}
             </Typography>
@@ -42,17 +42,15 @@ const Comments: PageType = memo(() => {
           className='w-full p-2 border rounded-lg'
         />
 
-        {/* Submit Button */}
         <Stack direction='row' justifyContent='flex-end' className='mt-2'>
           <Button onClick={() => handleSubmitComment(commentInput)} disabled={!commentInput.trim()}>
-            <SendIcon className='mr-2' /> Send
+            <SendIcon className='mr-2' /> Gửi
           </Button>
         </Stack>
       </Box>
 
-      {/* Comments List */}
       <Typography variant='h6' className='text-xl font-bold mb-4'>
-        Comments
+        Bình luận
       </Typography>
       <Box className='space-y-4'>
         {CommentsList.map((comment) => (
