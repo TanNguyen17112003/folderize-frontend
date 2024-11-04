@@ -7,7 +7,7 @@ import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import { paths } from 'src/paths';
 import type { Page as PageType } from 'src/types/page';
 import DocumentList from 'src/sections/documents/documents-list';
-const Page: PageType = () => {
+const DocumentListIndex = () => {
   return (
     <Stack
       sx={{
@@ -45,6 +45,4 @@ const Page: PageType = () => {
   );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
-
-export default Page;
+export default DocumentListIndex;

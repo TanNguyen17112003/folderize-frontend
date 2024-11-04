@@ -6,8 +6,8 @@ export interface UploadDocumentRequest {
   data: string;
 }
 export class DocumentsApi {
-  static async getDocuments(request: {}) {
-    return await apiGet('/files', request);
+  static async getDocuments(request: {}): Promise<DocumentDetail[]> {
+    return await apiGet('/documents', request);
   }
 
   static async uploadDocument(request: UploadDocumentRequest): Promise<DocumentDetail> {
