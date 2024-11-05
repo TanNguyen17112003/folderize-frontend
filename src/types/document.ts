@@ -9,8 +9,8 @@ export interface Document {
   keywords: string;
   fileSize: number;
   fileType: string;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface DocumentDetail extends Document {

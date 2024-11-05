@@ -7,16 +7,46 @@ import { FaFacebook, FaTwitter } from 'react-icons/fa6';
 import { EditIcon, MailIcon, PlusIcon } from 'lucide-react';
 import { DocumentsApi } from 'src/api/documents';
 import useFunction from 'src/hooks/use-function';
+import { Chart } from 'src/components/chart';
+import {
+  documentsByMonthChartOptions,
+  employeesByMonthChartOptions
+} from 'src/utils/config-charts';
+import { generateEmployees } from 'src/types/user';
 
 function DashboardAdminSection() {
   const { showSnackbarSuccess } = useAppSnackbar();
 
   const getDocumentsApi = useFunction(DocumentsApi.getDocuments);
 
+  const documents = useMemo(() => {
+    return getDocumentsApi.data || [];
+  }, [getDocumentsApi.data]);
+
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(mockOrganization.adminEmail);
     showSnackbarSuccess('Đã sao chép email');
-  }, []);
+  }, [showSnackbarSuccess]);
+
+  const documentsByMonth = useMemo(() => {
+    const months = Array.from({ length: 12 }, (_, index) => index + 1);
+    const documentsCountByMonth = months.map((month) => {
+      return documents.filter(
+        (doc) => doc.createdAt && new Date(doc.createdAt).getMonth() + 1 === month
+      ).length;
+    });
+    return documentsCountByMonth;
+  }, [documents]);
+
+  const employees = generateEmployees(20);
+
+  const employeesByMonth = useMemo(() => {
+    const months = Array.from({ length: 12 }, (_, index) => index + 1);
+    const employeesCountByMonth = months.map((month) => {
+      return employees.filter((emp) => new Date(emp.created_at).getMonth() + 1 === month).length;
+    });
+    return employeesCountByMonth;
+  }, [employees]);
 
   const contactList = useMemo(() => {
     return [
@@ -58,14 +88,15 @@ function DashboardAdminSection() {
         content: mockOrganization.address
       }
     ];
-  }, [mockOrganization]);
+  }, []);
 
   useEffect(() => {
     getDocumentsApi.call({});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
-    <Box className='flex gap-5 w-full'>
+    <Box className='flex gap-10 w-full'>
       <Stack width={'60%'} direction={'column'} gap={2}>
         <Stack
           direction={'row'}
@@ -74,7 +105,7 @@ function DashboardAdminSection() {
           paddingBottom={3}
         >
           <Stack direction={'row'} alignItems={'center'} gap={3}>
-            <Avatar sx={{ width: 60, height: 60 }} />
+            <Avatar className='w-15 h-15' />
             <Box className='flex flex-col gap-3'>
               <Typography variant='h4'>{mockOrganization.adminName}</Typography>
               <Typography variant='body1' fontWeight={'semibold'}>
@@ -109,7 +140,7 @@ function DashboardAdminSection() {
             </Stack>
           ))}
         </Stack>
-        <Divider sx={{ borderColor: 'blue', width: '100%', marginY: 3 }} />
+        <Divider className='border-blue-500 w-full my-3' />
         <Stack gap={3}>
           <Stack direction={'row'} justifyContent={'space-between'}>
             <Typography variant='h5' color='primary'>
@@ -131,7 +162,19 @@ function DashboardAdminSection() {
           ))}
         </Stack>
       </Stack>
-      <Stack width={'40%'} className='shadow-md'></Stack>
+      <Stack width={'40%'} borderLeft={0.5} paddingLeft={2}>
+        <Chart
+          title='Biểu đồ tài liệu'
+          options={documentsByMonthChartOptions}
+          series={[{ name: 'Số lượng tài liệu', data: documentsByMonth }]}
+        />
+        <Chart
+          title='Biểu đồ nhân viên'
+          options={employeesByMonthChartOptions}
+          series={[{ name: 'Số lượng nhân viên', data: employeesByMonth }]}
+          type='bar'
+        />
+      </Stack>
     </Box>
   );
 }

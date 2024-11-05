@@ -252,3 +252,77 @@ export const radialChartOptions = {
     }
   }
 };
+
+export const documentsByMonthChartOptions = {
+  chart: {
+    id: 'documentsByMonthChart',
+    height: 350,
+    type: 'bar' as const,
+    zoom: {
+      enabled: false
+    },
+    toolbar: {
+      show: false
+    }
+  },
+  xaxis: {
+    categories: Array.from(
+      { length: 12 },
+      (_, index) => (index + 1).toString().padStart(2, '0') + '/' + currentYear
+    ),
+    title: {
+      text: 'Tháng'
+    }
+  },
+  yaxis: {
+    title: {
+      text: 'Số lượng tài liệu'
+    }
+  },
+  noData: {
+    text: 'Không có dữ liệu',
+    align: 'center' as const,
+    verticalAlign: 'middle' as const,
+    style: {
+      color: '#000000',
+      fontSize: '14px'
+    }
+  }
+};
+
+export const employeesByMonthChartOptions = {
+  chart: {
+    id: 'employeesByMonthChart',
+    height: 350,
+    type: 'bar' as const,
+    zoom: {
+      enabled: false
+    },
+    toolbar: {
+      show: false
+    }
+  },
+  xaxis: {
+    categories: Array.from(
+      { length: 12 },
+      (_, index) => (index + 1).toString().padStart(2, '0') + '/' + currentYear
+    ),
+    title: {
+      text: 'Tháng'
+    }
+  },
+  yaxis: {
+    title: {
+      text: 'Số lượng nhân viên'
+    }
+  },
+  noData: {
+    text: 'Không có dữ liệu',
+    align: 'center' as const,
+    verticalAlign: 'middle' as const,
+    style: {
+      color: '#000000',
+      fontSize: '14px'
+    }
+  }
+};
