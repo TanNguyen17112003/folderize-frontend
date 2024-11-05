@@ -9,8 +9,11 @@ export interface Document {
   keywords: string;
   fileSize: number;
   fileType: string;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-export interface DocumentDetail extends Document {}
+export interface DocumentDetail extends Document {
+  body: any;
+  createElement(arg0: string): unknown;
+}

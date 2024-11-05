@@ -17,8 +17,13 @@ const Page: PageType = () => {
       className='min-h-screen'
     >
       <ContentHeader
-        title='Tổng quan hệ thống'
-        description='Hệ thống quản lý tài liệu chính phủ FOLDERIZE'
+        title={
+          !user
+            ? 'Tổng quan hệ thống'
+            : user?.role === 'ADMIN'
+              ? 'Tổng quan tổ chức'
+              : 'Hoạt động gần đây'
+        }
       />
       <DashboardIndex />
     </Stack>

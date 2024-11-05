@@ -7,7 +7,7 @@ export const getDashboardEmployeeConfigs = () => {
       items: [
         {
           title: 'Hoạt động gần đây',
-          path: paths.user.index,
+          path: paths.dashboard.index,
           icon: <Activity className='h-5 w-5' />
         },
         {

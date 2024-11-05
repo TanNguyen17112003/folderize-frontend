@@ -3,7 +3,6 @@ import { Box, Stack, Typography, Divider } from '@mui/material';
 import { Location, Call, Copyright } from 'iconsax-react';
 import { FaTiktok, FaFacebook, FaInstagram, FaX } from 'react-icons/fa6';
 import { Mail } from 'lucide-react';
-import logo from 'public/logo.png';
 
 function DashboardFooter() {
   const contactList: { icon: React.ReactNode; content: string }[] = [
