@@ -33,7 +33,6 @@ import { useMenu } from 'src/hooks/use-menu';
 
 function DocListIndex() {
   const [searchInput, setSearchInput] = React.useState('');
-  const [selectedTab, setSelectedTab] = React.useState('all');
   const [layout, setLayout] = React.useState('card'); // State for layout selection
   const { showSnackbarSuccess } = useAppSnackbar();
   const { getDocumentsApi } = useDocumentsContext();
@@ -45,10 +44,6 @@ function DocListIndex() {
     count: documents.length
   });
   const router = useRouter();
-  const tabOptions = [
-    { value: 'all', label: 'Tất cả', content: 'All Documents' },
-    { value: 'favorites', label: 'Đánh dấu', content: 'Favorite Documents' }
-  ];
 
   const DocumentManagementConfig = useMemo(() => {
     return getDocumentManagementConfig({
@@ -100,6 +95,9 @@ function DocListIndex() {
   const handleLayoutChange = (event: SelectChangeEvent) => {
     setLayout(event.target.value as string);
   };
+  const filterDocuments = useMemo(() => {
+    return documents.filter((doc) => doc.title.toLowerCase().includes(searchInput.toLowerCase()));
+  }, [documents, searchInput]);
 
   return (
     <Box className='px-6 py-5'>
@@ -128,14 +126,10 @@ function DocListIndex() {
           </Select>
         </FormControl>
       </Stack>
-      <Box mt={3}>
-        <CustomTabs options={tabOptions} value={selectedTab} onValueChange={setSelectedTab} />
-      </Box>
-
       <Box mt={2}>
-        {selectedTab === 'all' && layout === 'card' && (
+        {layout === 'card' ? (
           <Grid container spacing={4}>
-            {documents.map((doc) => (
+            {filterDocuments.map((doc) => (
               <Grid key={doc.id}>
                 <Card
                   elevation={2}
@@ -201,16 +195,7 @@ function DocListIndex() {
               </Grid>
             ))}
           </Grid>
-        )}
-        {selectedTab === 'all' && layout === 'table' && (
-          <CustomTable
-            rows={documents}
-            configs={DocumentManagementConfig}
-            onClickRow={(data: Document) => handleGoDocument(data.id)}
-            pagination={pagination}
-          />
-        )}
-        {selectedTab === 'favorites' && (
+        ) : (
           <CustomTable
             rows={documents}
             configs={DocumentManagementConfig}
