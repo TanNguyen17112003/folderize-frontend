@@ -8,10 +8,12 @@ import { useRouter } from 'next/router';
 import getDocumentManagementConfig from 'src/sections/documents/documents-list/documents-table-config';
 import useAppSnackbar from 'src/hooks/use-app-snackbar';
 import { Document } from 'src/types/document';
+import { useAuth } from 'src/hooks/use-auth';
 import { useDocumentsContext } from 'src/contexts/documents/documents-context';
 function DocListIndex() {
+  const { user } = useAuth();
   const [searchInput, setSearchInput] = React.useState('');
-  const [selectedTab, setSelectedTab] = React.useState('all');
+
   const { showSnackbarSuccess } = useAppSnackbar();
   const { getDocumentsApi } = useDocumentsContext();
   const documents = useMemo(() => {
@@ -23,9 +25,17 @@ function DocListIndex() {
   });
   const router = useRouter();
   const tabOptions = [
-    { value: 'all', label: 'Tất cả' },
-    { value: 'favorites', label: 'Đánh dấu' }
+    { value: 'all', label: 'Tất cả', role: 'ALL' },
+    { value: 'favorites', label: 'Đánh dấu', role: ['USER'] },
+    { value: 'not approved', label: 'Đang chờ phê duyệt', role: ['ADMIN', 'EMPLOYEE'] }
   ];
+
+  const filteredTabOptions = useMemo(() => {
+    const freeTabs = tabOptions.filter((tab) => tab.role === 'ALL');
+    const userTabs = tabOptions.filter((tab) => tab.role.includes(user?.role as string));
+    return [...freeTabs, ...userTabs];
+  }, [tabOptions, user]);
+  const [selectedTab, setSelectedTab] = React.useState(filteredTabOptions[0].value);
 
   const DocumentManagementConfig = useMemo(() => {
     return getDocumentManagementConfig({
@@ -47,11 +57,11 @@ function DocListIndex() {
 
   return (
     <Box className='px-6 py-5'>
-      <Stack direction={'row'} gap={2} width={'90%'}>
+      <Stack direction={'row'} gap={2} width={'100%'}>
         <TextField
           variant='outlined'
           placeholder='Tìm kiếm theo từ khóa...'
-          className='w-[80%]'
+          className='w-[90%]'
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           InputProps={{
@@ -67,7 +77,11 @@ function DocListIndex() {
         </Button>
       </Stack>
       <Box mt={3}>
-        <CustomTabs options={tabOptions} value={selectedTab} onValueChange={setSelectedTab} />
+        <CustomTabs
+          options={filteredTabOptions}
+          value={selectedTab}
+          onValueChange={setSelectedTab}
+        />
       </Box>
 
       <Box mt={2}>
@@ -79,8 +93,15 @@ function DocListIndex() {
             pagination={pagination}
           />
         )}
-        {/* {selectedTab === 'organization' && <Typography>Tổ chức</Typography>} */}
         {selectedTab === 'favorites' && (
+          <CustomTable
+            rows={documents}
+            configs={DocumentManagementConfig}
+            onClickRow={(data: Document) => handleGoDocument(data.id)}
+            pagination={pagination}
+          />
+        )}
+        {selectedTab === 'not approved' && (
           <CustomTable
             rows={documents}
             configs={DocumentManagementConfig}

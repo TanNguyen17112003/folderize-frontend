@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Stack, TextField, Button, InputAdornment, Typography } from '@mui/material';
+import React, { useEffect, useMemo } from 'react';
+import { Box, Stack, TextField, Button, InputAdornment, Typography, Avatar } from '@mui/material';
 import { SearchIcon } from 'lucide-react';
 import { ArrowRight, Book, User, Building } from 'iconsax-react';
 import { useRouter } from 'next/router';
@@ -7,6 +7,11 @@ import { paths } from 'src/paths';
 import backgroundRectangle from 'public/ui/background-rectangle.jpg';
 import DashboardFooter from './dashboard-footer';
 import { useAuth } from 'src/hooks/use-auth';
+import { DocumentsApi } from 'src/api/documents';
+import useFunction from 'src/hooks/use-function';
+import DashboardAdminSection from './dashboard-admin-section';
+import DashboardUserSection from './dashboard-user-section';
+import DashboardEmployeeSection from './dashboard-employee-section';
 
 interface DashboardInfoProps {
   title: string;
@@ -19,23 +24,37 @@ function DashboardIndex() {
   const router = useRouter();
   const { user } = useAuth();
 
-  const dashboardInfoList: DashboardInfoProps[] = [
-    {
-      title: 'Tài liệu',
-      amount: 180,
-      icon: <Book className='h-10 w-10' color='black' variant='Bold' />
-    },
-    {
-      title: 'Số nhân viên',
-      amount: 20,
-      icon: <User className='h-10 w-10' color='black' variant='Bold' />
-    },
-    {
-      title: 'Số tổ chức',
-      amount: 5,
-      icon: <Building className='h-10 w-10' color='black' variant='Bold' />
-    }
-  ];
+  const getDocumentsApi = useFunction(DocumentsApi.getDocuments);
+
+  const documents = useMemo(() => {
+    return getDocumentsApi.data || [];
+  }, [getDocumentsApi.data]);
+
+  const dashboardInfoList: DashboardInfoProps[] = useMemo(
+    () => [
+      {
+        title: 'Tài liệu',
+        amount: documents.length,
+        icon: <Book className='h-10 w-10' color='black' variant='Bold' />
+      },
+      {
+        title: 'Số nhân viên',
+        amount: 20,
+        icon: <User className='h-10 w-10' color='black' variant='Bold' />
+      },
+      {
+        title: 'Số tổ chức',
+        amount: 5,
+        icon: <Building className='h-10 w-10' color='black' variant='Bold' />
+      }
+    ],
+    [documents]
+  );
+
+  useEffect(() => {
+    getDocumentsApi.call({});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!user) {
     return (
@@ -72,7 +91,7 @@ function DashboardIndex() {
               color='info'
               fullWidth={false}
               endIcon={<ArrowRight />}
-              onClick={() => router.push(paths.admin['access-control'])}
+              onClick={() => router.push(paths.documents.index)}
             >
               Khám phá
             </Button>
@@ -98,9 +117,15 @@ function DashboardIndex() {
         <DashboardFooter />
       </Box>
     );
+  } else {
+    return (
+      <Stack paddingY={3} paddingX={4}>
+        {user.role === 'ADMIN' && <DashboardAdminSection />}
+        {user.role === 'USER' && <DashboardUserSection />}
+        {user.role === 'EMPLOYEE' && <DashboardEmployeeSection />}
+      </Stack>
+    );
   }
-
-  return null;
 }
 
 export default DashboardIndex;

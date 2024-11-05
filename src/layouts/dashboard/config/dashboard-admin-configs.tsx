@@ -6,17 +6,17 @@ export const getDashboardAdminConfigs = () => {
       subheader: 'Quản lý',
       items: [
         {
-          title: 'Thống kê',
-          path: paths.admin.index,
+          title: 'Tổng quan tổ chức',
+          path: paths.dashboard.index,
           icon: <PresentionChart className='h-5 w-5' />
         },
         {
-          title: 'Người dùng',
+          title: 'Quản lý Người dùng',
           path: paths.admin['user-management'],
           icon: <User className='h-5 w-5' />
         },
         {
-          title: 'Quyền truy cập',
+          title: 'Quản lý quyền truy cập',
           path: paths.admin['access-control'],
           icon: <Lock1 className='h-5 w-5' />
         },

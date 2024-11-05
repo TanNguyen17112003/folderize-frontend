@@ -13,4 +13,7 @@ export interface Document {
   updatedAt?: string;
 }
 
-export interface DocumentDetail extends Document {}
+export interface DocumentDetail extends Document {
+  body: any;
+  createElement(arg0: string): unknown;
+}
