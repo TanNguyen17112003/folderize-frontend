@@ -88,18 +88,7 @@ export const SideNav: FC<SideNavProps> = (props) => {
                         </Typography>
                       </Stack>
                     </Stack>
-                    {user && (user.role === 'EMPLOYEE' || user.role === 'ADMIN') && (
-                      <Stack>
-                        <Button
-                          variant='contained'
-                          startIcon={<Add />}
-                          className='!text-black !bg-white'
-                          LinkComponent={Link}
-                        >
-                          Thêm tài liệu
-                        </Button>
-                      </Stack>
-                    )}
+
                     {(user?.role === 'USER' || !user.role) && (
                       <Tooltip title='Thông báo' className='cursor-pointer'>
                         <Badge

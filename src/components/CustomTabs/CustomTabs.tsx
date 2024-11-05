@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../shadcn/ui/tabs';
 export interface TabOption {
   value: string;
   label: string;
-  content: ReactNode;
+  content?: ReactNode;
 }
 
 export interface CustomTabsProps extends TabsProps {
