@@ -21,7 +21,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { CustomTable } from 'src/components/custom-table';
-import CustomTabs from 'src/components/CustomTabs';
 import { useDocumentsContext } from 'src/contexts/documents/documents-context';
 import useAppSnackbar from 'src/hooks/use-app-snackbar';
 import usePagination from 'src/hooks/use-pagination';
@@ -35,6 +34,7 @@ import { useAuth } from 'src/hooks/use-auth';
 function DocListIndex() {
   const { user } = useAuth();
   const [searchInput, setSearchInput] = React.useState('');
+  const [searchTerm, setSearchTerm] = React.useState('');
   const [layout, setLayout] = React.useState('card');
   const { showSnackbarSuccess } = useAppSnackbar();
   const [selectedTab, setSelectedTab] = useState<string>('approved');
@@ -43,9 +43,6 @@ function DocListIndex() {
     return getDocumentsApi.data || [];
   }, [getDocumentsApi.data]);
 
-  const pagination = usePagination({
-    count: documents.length
-  });
   const router = useRouter();
 
   const DocumentManagementConfig = useMemo(() => {
@@ -66,8 +63,11 @@ function DocListIndex() {
     [router]
   );
 
-  const renderImage = (type: string | null) => {
-    return FILE_TYPES.find((file) => file.type === type?.toUpperCase())?.image || '/ui/pdfIcon.png';
+  const renderImage = (documentUrl: string | null) => {
+    const docType = documentUrl?.split('.').pop();
+    return (
+      FILE_TYPES.find((file) => file.type === docType?.toUpperCase())?.image || '/ui/pdfIcon.png'
+    );
   };
 
   const handleEdit = (doc: Document) => {
@@ -98,9 +98,18 @@ function DocListIndex() {
   const handleLayoutChange = (event: SelectChangeEvent) => {
     setLayout(event.target.value as string);
   };
+
+  const handleSearch = () => {
+    setSearchTerm(searchInput);
+  };
+
   const filterDocuments = useMemo(() => {
-    return documents.filter((doc) => doc.title.toLowerCase().includes(searchInput.toLowerCase()));
-  }, [documents, searchInput]);
+    return documents.filter((doc) => doc.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  }, [documents, searchTerm]);
+
+  const pagination = usePagination({
+    count: filterDocuments.length
+  });
 
   return (
     <Box className='px-6 py-5'>
@@ -119,7 +128,7 @@ function DocListIndex() {
             )
           }}
         />
-        <Button variant='contained' className='w-[10%]'>
+        <Button variant='contained' className='w-[10%]' onClick={handleSearch}>
           Tìm kiếm
         </Button>
         <FormControl variant='outlined' className='w-[20%]'>
@@ -156,7 +165,7 @@ function DocListIndex() {
                     justifyContent='center'
                     alignItems='center'
                   >
-                    <Image src={renderImage(doc.fileType)} alt='pdf' width={100} height={100} />
+                    <Image src={renderImage(doc.documentUrl)} alt='pdf' width={100} height={100} />
                   </Box>
                   <Box
                     p={2}
@@ -200,7 +209,7 @@ function DocListIndex() {
           </Grid>
         ) : (
           <CustomTable
-            rows={documents}
+            rows={filterDocuments}
             configs={DocumentManagementConfig}
             onClickRow={(data: Document) => handleGoDocument(data.id)}
             pagination={pagination}
@@ -208,34 +217,42 @@ function DocListIndex() {
         )}
         {selectedTab === 'not approved' && (
           <CustomTable
-            rows={documents}
+            rows={filterDocuments}
             configs={DocumentManagementConfig}
             onClickRow={(data: Document) => handleGoDocument(data.id)}
             pagination={pagination}
           />
         )}
       </Box>
-
-      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <MenuItem onClick={() => handleMenuItemClick('edit')}>
-          <ListItemIcon>
-            <Edit color='primary' />
-          </ListItemIcon>
-          Chỉnh sửa
-        </MenuItem>
-        <MenuItem onClick={() => handleMenuItemClick('delete')}>
-          <ListItemIcon>
-            <Delete color='error' />
-          </ListItemIcon>
-          Xoá
-        </MenuItem>
-        <MenuItem onClick={() => handleMenuItemClick('bookmark')}>
-          <ListItemIcon>
-            <Bookmark />
-          </ListItemIcon>
-          Đánh dấu
-        </MenuItem>
-      </Menu>
+      {user && (
+        <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+          {(user?.role === 'EMPLOYEE' || user?.role === 'ADMIN') && (
+            <MenuItem onClick={() => handleMenuItemClick('edit')}>
+              <ListItemIcon>
+                <Edit color='primary' />
+              </ListItemIcon>
+              Chỉnh sửa
+            </MenuItem>
+          )}
+          {user?.role === 'EMPLOYEE' ||
+            (user?.role === 'ADMIN' && (
+              <MenuItem onClick={() => handleMenuItemClick('delete')}>
+                <ListItemIcon>
+                  <Delete color='error' />
+                </ListItemIcon>
+                Xoá
+              </MenuItem>
+            ))}
+          {user?.role === 'USER' && (
+            <MenuItem onClick={() => handleMenuItemClick('bookmark')}>
+              <ListItemIcon>
+                <Bookmark />
+              </ListItemIcon>
+              Đánh dấu
+            </MenuItem>
+          )}
+        </Menu>
+      )}
     </Box>
   );
 }

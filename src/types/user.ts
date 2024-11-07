@@ -3,6 +3,7 @@ import * as yup from 'yup';
 type UserRole = 'ADMIN' | 'USER' | 'EMPLOYEE';
 
 export interface User {
+  index?: number;
   id: string;
   email: string;
   fullName: string;

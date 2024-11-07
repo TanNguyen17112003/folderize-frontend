@@ -68,4 +68,8 @@ export class UsersApi {
   }): Promise<User> {
     return await apiPost('/users/password', payload);
   }
+
+  static async getUsers(request: {}): Promise<UserDetail[]> {
+    return await apiGet('/users', request);
+  }
 }

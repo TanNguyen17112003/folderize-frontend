@@ -6,6 +6,7 @@ import useAppSnackbar from 'src/hooks/use-app-snackbar';
 import { FaFacebook, FaTwitter } from 'react-icons/fa6';
 import { EditIcon, MailIcon, PlusIcon } from 'lucide-react';
 import { DocumentsApi } from 'src/api/documents';
+import { OrganizationsApi } from 'src/api/organizations';
 import useFunction from 'src/hooks/use-function';
 import { Chart } from 'src/components/chart';
 import {
@@ -13,18 +14,39 @@ import {
   employeesByMonthChartOptions
 } from 'src/utils/config-charts';
 import { generateEmployees } from 'src/types/user';
+import { useDialog } from 'src/hooks/use-dialog';
+import { useDrawer } from 'src/hooks/use-drawer';
+import { useAuth } from 'src/hooks/use-auth';
+import DashboardAddEmployeeDialog from './dashboard-admin-add-employee-dialog';
+import DashboardAdminEditDrawer from './dashboard-admin-edit-drawer';
 
-function DashboardAdminSection() {
+function DashboardAdminOrganizationSection() {
   const { showSnackbarSuccess } = useAppSnackbar();
+  const [organization, setOrganization] = React.useState<OrganizationDetail | null>(null);
+  const { user } = useAuth();
+  const addEmployeeDialog = useDialog<OrganizationDetail>();
+  const editOrganizationDrawer = useDrawer<OrganizationDetail>();
 
   const getDocumentsApi = useFunction(DocumentsApi.getDocuments);
+
+  useEffect(() => {
+    const fetchOrganization = async () => {
+      try {
+        const response = await OrganizationsApi.getOrganization(user?.id as string);
+        setOrganization(response);
+      } catch (error) {
+        throw error;
+      }
+    };
+    fetchOrganization();
+  }, [user]);
 
   const documents = useMemo(() => {
     return getDocumentsApi.data || [];
   }, [getDocumentsApi.data]);
 
   const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(mockOrganization.adminEmail);
+    navigator.clipboard.writeText(mockOrganization?.adminEmail as string);
     showSnackbarSuccess('Đã sao chép email');
   }, [showSnackbarSuccess]);
 
@@ -69,26 +91,26 @@ function DashboardAdminSection() {
     return [
       {
         title: 'Tên',
-        content: mockOrganization.name
+        content: organization?.name
       },
       {
         title: 'Mã số',
-        content: mockOrganization.code
+        content: organization?.code
       },
       {
         title: 'Số điện thoại',
-        content: mockOrganization.organization_phone
+        content: organization?.organizationPhone
       },
       {
         title: 'Phòng ban',
-        content: mockOrganization.department_type
+        content: organization?.departmentType
       },
       {
         title: 'Địa chỉ',
-        content: mockOrganization.address
+        content: organization?.address
       }
     ];
-  }, []);
+  }, [organization]);
 
   useEffect(() => {
     getDocumentsApi.call({});
@@ -106,20 +128,25 @@ function DashboardAdminSection() {
         >
           <Stack direction={'row'} alignItems={'center'} gap={3}>
             <Avatar className='w-15 h-15' />
-            <Box className='flex flex-col gap-3'>
-              <Typography variant='h4'>{mockOrganization.adminName}</Typography>
+            <Box className='flex flex-col gap-1'>
+              <Typography variant='h4'>{user?.fullName}</Typography>
               <Typography variant='body1' fontWeight={'semibold'}>
-                {mockOrganization.adminPhone}
+                {user?.phone}
               </Typography>
               <Stack direction={'row'} alignItems={'center'} gap={1}>
                 <Typography variant='body2' color='primary' className='underline'>
-                  {mockOrganization.adminEmail}
+                  {user?.email}
                 </Typography>
                 <Copy size={16} color='blue' cursor={'pointer'} onClick={handleCopy} />
               </Stack>
             </Box>
           </Stack>
-          <Button startIcon={<PlusIcon size={20} />} variant='contained' color='warning'>
+          <Button
+            startIcon={<PlusIcon size={20} />}
+            variant='contained'
+            color='warning'
+            onClick={() => addEmployeeDialog.handleOpen(mockOrganization)}
+          >
             Thêm nhân viên
           </Button>
         </Stack>
@@ -146,7 +173,12 @@ function DashboardAdminSection() {
             <Typography variant='h5' color='primary'>
               Thông tin về công ty
             </Typography>
-            <Button variant='contained' color='primary' startIcon={<EditIcon size={20} />}>
+            <Button
+              variant='contained'
+              color='warning'
+              startIcon={<EditIcon size={20} />}
+              onClick={() => editOrganizationDrawer.handleOpen(organization as OrganizationDetail)}
+            >
               Chỉnh sửa thông tin
             </Button>
           </Stack>
@@ -175,8 +207,19 @@ function DashboardAdminSection() {
           type='bar'
         />
       </Stack>
+      <DashboardAddEmployeeDialog
+        open={addEmployeeDialog.open}
+        onClose={addEmployeeDialog.handleClose}
+        organization={addEmployeeDialog.data as OrganizationDetail}
+      />
+      <DashboardAdminEditDrawer
+        open={editOrganizationDrawer.open}
+        onClose={editOrganizationDrawer.handleClose}
+        organization={editOrganizationDrawer.data as OrganizationDetail}
+        setOrganization={setOrganization}
+      />
     </Box>
   );
 }
 
-export default DashboardAdminSection;
+export default DashboardAdminOrganizationSection;

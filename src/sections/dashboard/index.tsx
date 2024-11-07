@@ -1,15 +1,16 @@
 import React, { useEffect, useMemo } from 'react';
 import { Box, Stack, TextField, Button, InputAdornment, Typography, Avatar } from '@mui/material';
 import { SearchIcon } from 'lucide-react';
-import { ArrowRight, Book, User, Building } from 'iconsax-react';
+import { ArrowRight, Book, Building } from 'iconsax-react';
 import { useRouter } from 'next/router';
 import { paths } from 'src/paths';
 import backgroundRectangle from 'public/ui/background-rectangle.jpg';
 import DashboardFooter from './dashboard-footer';
 import { useAuth } from 'src/hooks/use-auth';
 import { DocumentsApi } from 'src/api/documents';
+import { OrganizationsApi } from 'src/api/organizations';
 import useFunction from 'src/hooks/use-function';
-import DashboardAdminSection from './dashboard-admin-section';
+import DashboardAdminSection from './dashboard-admin/dashboard-admin-section';
 import DashboardUserSection from './dashboard-user-section';
 import DashboardEmployeeSection from './dashboard-employee-section';
 
@@ -25,10 +26,14 @@ function DashboardIndex() {
   const { user } = useAuth();
 
   const getDocumentsApi = useFunction(DocumentsApi.getDocuments);
+  const getOrganizationsApi = useFunction(OrganizationsApi.getOrganizations);
 
   const documents = useMemo(() => {
     return getDocumentsApi.data || [];
   }, [getDocumentsApi.data]);
+  const organizations = useMemo(() => {
+    return getOrganizationsApi.data || [];
+  }, [getOrganizationsApi.data]);
 
   const dashboardInfoList: DashboardInfoProps[] = useMemo(
     () => [
@@ -38,21 +43,17 @@ function DashboardIndex() {
         icon: <Book className='h-10 w-10' color='black' variant='Bold' />
       },
       {
-        title: 'Số nhân viên',
-        amount: 20,
-        icon: <User className='h-10 w-10' color='black' variant='Bold' />
-      },
-      {
         title: 'Số tổ chức',
-        amount: 5,
+        amount: organizations.length,
         icon: <Building className='h-10 w-10' color='black' variant='Bold' />
       }
     ],
-    [documents]
+    [documents, organizations]
   );
 
   useEffect(() => {
     getDocumentsApi.call({});
+    getOrganizationsApi.call({});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -101,7 +102,7 @@ function DashboardIndex() {
           {dashboardInfoList.map((info, index) => (
             <Stack
               direction={'row'}
-              className='gap-3 px-5 py-7 rounded-lg w-[33.33%] shadow-md cursor-pointer'
+              className='gap-3 px-5 py-7 rounded-lg w-1/2 shadow-md cursor-pointer'
               key={index}
             >
               {info.icon}

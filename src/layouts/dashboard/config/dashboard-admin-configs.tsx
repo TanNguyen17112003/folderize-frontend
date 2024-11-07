@@ -3,35 +3,35 @@ import { LogoutCurve, User, PresentionChart, Lock1, DocumentText } from 'iconsax
 export const getDashboardAdminConfigs = () => {
   return [
     {
-      subheader: 'Quản lý',
+      subheader: 'Quản Lý',
       items: [
         {
-          title: 'Tổng quan tổ chức',
+          title: 'Tổng Quan Hệ Thống',
           path: paths.dashboard.index,
           icon: <PresentionChart className='h-5 w-5' />
         },
         {
-          title: 'Quản lý Người dùng',
+          title: 'Quản Lý Nhân Viên',
           path: paths.admin['user-management'],
           icon: <User className='h-5 w-5' />
         },
         {
-          title: 'Quản lý quyền truy cập',
+          title: 'Quản Lý Quyền Truy Cập',
           path: paths.admin['access-control'],
           icon: <Lock1 className='h-5 w-5' />
         },
         {
-          title: 'Tài liệu',
+          title: 'Tài Liệu',
           path: paths.documents.index,
           icon: <DocumentText className='h-5 w-5' />
         }
       ]
     },
     {
-      subheader: 'Hành động',
+      subheader: 'Hành Động',
       items: [
         {
-          title: 'Đăng xuất',
+          title: 'Đăng Xuất',
           path: paths.auth.logout,
           icon: <LogoutCurve className='h-5 w-5' />
         }

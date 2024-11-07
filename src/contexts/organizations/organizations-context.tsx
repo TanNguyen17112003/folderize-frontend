@@ -1,31 +1,53 @@
 import { createContext, ReactNode, useCallback, useEffect, useContext } from 'react';
-import { DocumentsApi } from 'src/api/documents';
+import { OrganizationsApi } from 'src/api/organizations';
 import useFunction, {
   DEFAULT_FUNCTION_RETURN,
   UseFunctionReturnType
 } from 'src/hooks/use-function';
-import { DocumentDetail, Document } from 'src/types/document';
+import { Organization, OrganizationDetail } from 'src/types/organization';
 
 interface ContextValue {
-  getDocumentsApi: UseFunctionReturnType<FormData, DocumentDetail[]>;
+  getOrganizationsApi: UseFunctionReturnType<FormData, OrganizationDetail[]>;
+  updateOrganization: (
+    organization: Partial<Omit<Organization, 'id'>>,
+    id: string
+  ) => Promise<void>;
 }
 
 export const OrganizationsContext = createContext<ContextValue>({
-  getDocumentsApi: DEFAULT_FUNCTION_RETURN
+  getOrganizationsApi: DEFAULT_FUNCTION_RETURN,
+  updateOrganization: async () => {}
 });
 
 const OrganizationsProvider = ({ children }: { children: ReactNode }) => {
-  const getDocumentsApi = useFunction(DocumentsApi.getDocuments);
+  const getOrganizationsApi = useFunction(OrganizationsApi.getOrganizations);
+
+  const updateOrganization = useCallback(
+    async (organization: Partial<Omit<Organization, 'id'>>, id: string) => {
+      try {
+        await OrganizationsApi.updateOrganization(organization, id);
+        getOrganizationsApi.setData(
+          (getOrganizationsApi.data || []).map((c) =>
+            c.id === id ? Object.assign(c, organization) : c
+          )
+        );
+      } catch (error) {
+        throw error;
+      }
+    },
+    [getOrganizationsApi]
+  );
 
   useEffect(() => {
-    getDocumentsApi.call(new FormData());
+    getOrganizationsApi.call(new FormData());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <OrganizationsContext.Provider
       value={{
-        getDocumentsApi
+        getOrganizationsApi,
+        updateOrganization
       }}
     >
       {children}

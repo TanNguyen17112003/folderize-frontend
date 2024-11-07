@@ -14,15 +14,11 @@ export class DocumentsApi {
     return await apiPost('/documents', getFormData(request));
   }
 
-  static async downloadDocuments(request: Partial<DocumentDetail & Pick<DocumentDetail, 'id'>>) {
-    return await apiGet(`/files/download/${request.id}`, request);
+  static async updateDocument(request: Partial<DocumentDetail>, documentId: string) {
+    return await apiPost(`/documents/` + documentId, request);
   }
 
-  static async updateDocument(request: Partial<DocumentDetail>) {
-    return await apiPost(`/files`, request);
-  }
-
-  static async deleteDocument(ids: DocumentDetail['id'][]) {
-    return await apiDelete(`/files`, { ids });
+  static async deleteDocument(documentId: DocumentDetail['id']) {
+    return await apiDelete(`/documents/` + documentId, {});
   }
 }
