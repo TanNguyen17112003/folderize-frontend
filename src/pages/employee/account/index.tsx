@@ -1,10 +1,10 @@
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
 import type { Page as PageType } from 'src/types/page';
-import { Stack } from '@mui/material';
+import { Box, Stack, Tabs, Tab } from '@mui/material';
 import ContentHeader from 'src/components/content-header';
-import UserManagementList from 'src/sections/admin/user-management/user-management-list';
 import { useMemo, useState } from 'react';
-import { employees } from 'src/types/user';
+import ProfileSection from 'src/sections/account/account-info';
+import AccountPassword from 'src/sections/account/account-password';
 
 const Page: PageType = () => {
   return (
@@ -17,11 +17,12 @@ const Page: PageType = () => {
       className='min-h-screen'
     >
       <ContentHeader
-        title='Quản lý nhân viên'
-        description='Theo dõi và kiểm soát các hoạt động của nhân viên trong tổ chức'
+        title='Thông tin cá nhân'
+        description='Quản lý và chỉnh sửa thông tin cá nhân'
       />
-      <Stack className='px-6 py-5'>
-        <UserManagementList employees={employees} />
+      <Stack gap={1} marginX={3} marginY={2}>
+        <ProfileSection />
+        <AccountPassword />
       </Stack>
     </Stack>
   );

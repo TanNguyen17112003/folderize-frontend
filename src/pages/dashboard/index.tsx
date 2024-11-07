@@ -21,7 +21,7 @@ const Page: PageType = () => {
           !user
             ? 'Tổng quan hệ thống'
             : user?.role === 'ADMIN'
-              ? 'Tổng quan tổ chức'
+              ? 'Tổng quan hệ thống'
               : 'Hoạt động gần đây'
         }
       />

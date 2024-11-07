@@ -6,14 +6,14 @@ export const getDashboardUserConfigs = () => {
       subheader: 'Tính năng',
       items: [
         {
+          title: 'Hoạt động gần đây',
+          path: paths.dashboard.index,
+          icon: <Activity className='h-5 w-5' />
+        },
+        {
           title: 'Tài liệu',
           path: paths.documents.index,
           icon: <DocumentText className='h-5 w-5' />
-        },
-        {
-          title: 'Hoạt động gần đây',
-          path: paths.user.index,
-          icon: <Activity className='h-5 w-5' />
         }
       ]
     },
@@ -22,7 +22,7 @@ export const getDashboardUserConfigs = () => {
       items: [
         {
           title: 'Thông tin cá nhân',
-          path: paths.user.index,
+          path: paths.user.account,
           icon: <User className='h-5 w-5' />
         },
         {

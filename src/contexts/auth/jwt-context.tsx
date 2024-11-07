@@ -184,7 +184,8 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         email: response.email,
         fullName: response.fullName,
         phone: response.phone,
-        role: response.role
+        role: response.role,
+        id: response.id
       };
       CookieHelper.setItem(CookieKeys.TOKEN, response.token);
       CookieHelper.setItem('user_data', JSON.stringify(responseData));

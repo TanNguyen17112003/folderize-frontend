@@ -19,16 +19,21 @@ export const paths = {
     'user-management': '/admin/user-management'
   },
   employee: {
-    index: '/employee'
+    index: '/employee',
+    account: '/employee/account'
   },
   user: {
-    index: '/user'
+    index: '/user',
+    account: '/user/account'
   },
   documents: {
     index: '/documents',
     // 'upload-page': '/documents/documents-upload-page',
     'details-doc': '/documents/details-doc',
     'documents-upload-page': '/documents/documents-upload-page'
+  },
+  invitation: {
+    index: '/invitation'
   },
   401: '/401',
   404: '/404',
