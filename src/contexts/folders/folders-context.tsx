@@ -28,12 +28,28 @@ const FoldersProvider = ({ children }: { children: ReactNode }) => {
   const createFolder = useCallback(
     async (request: File) => {
       try {
-        const user = await DocumentsApi.uploadDocument({ file: request });
+        const user = await DocumentsApi.uploadDocument({
+          file: request,
+          data: ''
+        });
         if (user) {
           const newUsers: DocumentDetail[] = [
             {
               ...request,
-              id: user.id
+              id: user.id,
+              body: undefined,
+              createElement: function (arg0: string): unknown {
+                throw new Error('Function not implemented.');
+              },
+              title: '',
+              description: '',
+              documentUrl: '',
+              version: '',
+              changeNote: '',
+              category: '',
+              keywords: '',
+              fileSize: 0,
+              fileType: ''
             },
             ...(getFoldersApi.data || [])
           ];
@@ -49,10 +65,10 @@ const FoldersProvider = ({ children }: { children: ReactNode }) => {
   const updateFolder = useCallback(
     async (Document: Partial<Document>) => {
       try {
-        await DocumentsApi.updateDocument(Document);
+        await DocumentsApi.updateDocument(Document, Document.id as string);
         getFoldersApi.setData(
-          (getFoldersApi.data || []).map((c: { id: string | undefined }) =>
-            c.id == Document.id ? Object.assign(c, Document) : c
+          (getFoldersApi.data || []).map((c: DocumentDetail) =>
+            c.id == Document.id ? { ...c, ...Document } : c
           )
         );
       } catch (error) {
@@ -65,7 +81,7 @@ const FoldersProvider = ({ children }: { children: ReactNode }) => {
   const deleteFolder = useCallback(
     async (ids: Document['id'][]) => {
       try {
-        const results = await Promise.allSettled(ids.map((id) => DocumentsApi.deleteDocument(ids)));
+        const results = await Promise.allSettled(ids.map((id) => DocumentsApi.deleteDocument(id)));
         getFoldersApi.setData([
           ...(getFoldersApi.data || []).filter(
             (Document: DocumentDetail) =>

@@ -26,7 +26,7 @@ function DashboardIndex() {
   const { user } = useAuth();
 
   const getDocumentsApi = useFunction(DocumentsApi.getDocuments);
-  const getOrganizationsApi = useFunction(OrganizationsApi.getOrganizations);
+  const getOrganizationsApi = useFunction(OrganizationsApi.getNumberOfOrganizations);
 
   const documents = useMemo(() => {
     return getDocumentsApi.data || [];
@@ -44,7 +44,7 @@ function DashboardIndex() {
       },
       {
         title: 'Số tổ chức',
-        amount: organizations.length,
+        amount: organizations,
         icon: <Building className='h-10 w-10' color='black' variant='Bold' />
       }
     ],

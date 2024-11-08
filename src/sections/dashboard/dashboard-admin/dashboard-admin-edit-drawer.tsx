@@ -37,26 +37,25 @@ function DashboardAdminEditDrawer({
   organization: OrganizationDetail;
   setOrganization: (organization: OrganizationDetail) => void;
 }) {
-  const getOrganizationsApi = useFunction(OrganizationsApi.getOrganizations);
+  const getOrganizationInfoApi = useFunction(OrganizationsApi.getUserOrganizationInfo);
   const handleEditOrganization = useCallback(
     async (values: OrganizationFormProps) => {
       try {
-        const updatedOrganization = await OrganizationsApi.updateOrganization(
-          values,
-          organization.id
-        );
-        await getOrganizationsApi.setData(
-          (getOrganizationsApi.data || []).map((c) =>
-            c.id === organization.id ? Object.assign(c, values) : c
-          )
-        );
+        const updatedOrganization = await OrganizationsApi.updateOrganization(values);
+        await getOrganizationInfoApi.setData(updatedOrganization);
         setOrganization(updatedOrganization);
         onClose();
       } catch (error) {
         throw error;
       }
     },
-    [organization, getOrganizationsApi.setData, getOrganizationsApi.data, onClose, setOrganization]
+    [
+      organization,
+      getOrganizationInfoApi.setData,
+      getOrganizationInfoApi.data,
+      onClose,
+      setOrganization
+    ]
   );
   const handleEditOrganizationHelper = useFunction(handleEditOrganization, {
     successMessage: 'Cập nhật thông tin tài liệu thành công!'
@@ -82,7 +81,7 @@ function DashboardAdminEditDrawer({
   });
 
   useEffect(() => {
-    getOrganizationsApi.call({});
+    getOrganizationInfoApi.call({});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

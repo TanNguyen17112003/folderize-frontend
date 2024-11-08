@@ -9,8 +9,8 @@ export interface User {
   fullName: string;
   phone: string;
   role: UserRole;
-  created_at: string;
-  updated_at?: string;
+  createdAt: string;
+  updatedAt?: string;
 }
 
 export interface UserDetail extends User {}
@@ -27,7 +27,7 @@ export const initialUser: UserDetail = {
   email: '',
   fullName: '',
   phone: '',
-  created_at: '',
+  createdAt: '',
   role: 'USER'
 };
 
@@ -47,8 +47,8 @@ export const generateEmployees = (count: number): UserDetail[] => {
       fullName: `Employee ${i + 1}`,
       phone: `123-456-789${i}`,
       role: 'EMPLOYEE',
-      created_at: getRandomDateThisYear(),
-      updated_at: undefined
+      createdAt: getRandomDateThisYear(),
+      updatedAt: undefined
     });
   }
   return employees;
