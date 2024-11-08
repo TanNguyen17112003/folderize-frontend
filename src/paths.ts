@@ -32,8 +32,8 @@ export const paths = {
     'details-doc': '/documents/details-doc',
     'documents-upload-page': '/documents/documents-upload-page'
   },
-  invitation: {
-    index: '/invitation'
+  'complete-invitation': {
+    index: '/complete-invitation'
   },
   401: '/401',
   404: '/404',

@@ -15,25 +15,31 @@ import { Box } from '@mui/system';
 import React, { useCallback } from 'react';
 import useFunction from 'src/hooks/use-function';
 import { formatDate } from 'src/utils/format-time-currency';
+import { useRouter } from 'next/router';
+import { OrganizationsApi } from 'src/api/organizations';
+import { paths } from 'src/paths';
 
 function InvitationDialog({
   organizationName,
   message,
   onDeny,
-  onApprove,
   ...dialogProps
 }: DialogProps & {
   organizationName: string;
   message: string;
   onDeny: () => void;
-  onApprove: () => void;
 }) {
-  const handleInvite = useCallback(async (values: { email: string; description: string }) => {
-    console.log(values);
-  }, []);
+  const router = useRouter();
+  const handleAccept = useCallback(async () => {
+    await OrganizationsApi.completeInvitation({
+      token: router.query.token as string,
+      userReply: 'ACCEPTED'
+    });
+    router.push(paths.auth.login);
+  }, [router]);
 
-  const handleInviteHelper = useFunction(handleInvite, {
-    successMessage: 'Gửi lời mời thành công'
+  const handleAcceptHelper = useFunction(handleAccept, {
+    successMessage: 'Chấp nhận lời mời thành công'
   });
 
   return (
@@ -70,8 +76,7 @@ function InvitationDialog({
           variant='contained'
           color='success'
           onClick={async (e) => {
-            dialogProps.onClose?.(e, 'escapeKeyDown');
-            onApprove();
+            await handleAcceptHelper.call({});
           }}
         >
           Chấp nhận

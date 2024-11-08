@@ -3,10 +3,22 @@ import type { Page as PageType } from 'src/types/page';
 import { Stack } from '@mui/material';
 import ContentHeader from 'src/components/content-header';
 import UserManagementList from 'src/sections/admin/user-management/user-management-list';
-import { useMemo, useState } from 'react';
-import { employees } from 'src/types/user';
+import { useEffect, useMemo, useState } from 'react';
+import { OrganizationsApi } from 'src/api/organizations';
+import useFunction from 'src/hooks/use-function';
 
 const Page: PageType = () => {
+  const getOrganizationEmployeesApi = useFunction(OrganizationsApi.getOrganizationEmployees);
+  const employees = useMemo(() => {
+    return (getOrganizationEmployeesApi.data?.employeeList || []).filter(
+      (emp) => emp.role === 'EMPLOYEE'
+    );
+  }, [getOrganizationEmployeesApi.data]);
+
+  useEffect(() => {
+    getOrganizationEmployeesApi.call({});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <Stack
       sx={{

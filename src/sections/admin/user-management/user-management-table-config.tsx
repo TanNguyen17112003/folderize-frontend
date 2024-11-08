@@ -2,7 +2,7 @@ import { Typography, Stack, Chip, Button } from '@mui/material';
 import { CustomTableConfig } from 'src/components/custom-table';
 import { Bookmark, DocumentDownload } from 'iconsax-react';
 import { UserDetail } from 'src/types/user';
-import { formatDate } from 'src/utils/format-time-currency';
+import { formatDate, formatUnixTimestamp } from 'src/utils/format-time-currency';
 import { Trash } from 'iconsax-react';
 const getUserManangementTableConfig = ({
   onClickRemove
@@ -25,7 +25,7 @@ const getUserManangementTableConfig = ({
     key: 'createdAt',
     headerLabel: 'Thời gian tham gia',
     type: 'string',
-    renderCell: (data) => <Typography>{formatDate(new Date(data.created_at))}</Typography>
+    renderCell: (data) => <Typography>{formatDate(formatUnixTimestamp(data.createdAt))}</Typography>
   },
   {
     key: 'email',

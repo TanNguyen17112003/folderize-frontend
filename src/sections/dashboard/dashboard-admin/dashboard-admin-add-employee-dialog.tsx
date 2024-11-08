@@ -13,6 +13,7 @@ import React, { useCallback } from 'react';
 import useFunction from 'src/hooks/use-function';
 import { OrganizationDetail } from 'src/types/organization';
 import { useFormik } from 'formik';
+import { OrganizationsApi } from 'src/api/organizations';
 
 function DashboardAminAddEmployeeDialog({
   organization,
@@ -20,18 +21,21 @@ function DashboardAminAddEmployeeDialog({
 }: DialogProps & {
   organization: OrganizationDetail;
 }) {
-  const handleInvite = useCallback(async (values: { email: string; description: string }) => {
-    console.log(values);
+  const handleInvite = useCallback(async (values: { email: string; message: string }) => {
+    await OrganizationsApi.sendInvitation({
+      email: values.email,
+      message: values.message
+    });
   }, []);
 
   const handleInviteHelper = useFunction(handleInvite, {
     successMessage: 'Gửi lời mời thành công'
   });
 
-  const formik = useFormik<{ email: string; description: string }>({
+  const formik = useFormik<{ email: string; message: string }>({
     initialValues: {
       email: '',
-      description: ''
+      message: ''
     },
     onSubmit: async (values) => {
       await handleInviteHelper.call(values);
@@ -54,8 +58,8 @@ function DashboardAminAddEmployeeDialog({
             fullWidth
           />
           <TextField
-            name='description'
-            value={formik.values.description}
+            name='message'
+            value={formik.values.message}
             onChange={formik.handleChange}
             fullWidth
             multiline

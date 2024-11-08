@@ -7,7 +7,7 @@ import useFunction, {
 import { Organization, OrganizationDetail } from 'src/types/organization';
 
 interface ContextValue {
-  getOrganizationsApi: UseFunctionReturnType<FormData, OrganizationDetail[]>;
+  getOrganizationInfoApi: UseFunctionReturnType<FormData, OrganizationDetail>;
   updateOrganization: (
     organization: Partial<Omit<Organization, 'id'>>,
     id: string
@@ -15,38 +15,38 @@ interface ContextValue {
 }
 
 export const OrganizationsContext = createContext<ContextValue>({
-  getOrganizationsApi: DEFAULT_FUNCTION_RETURN,
+  getOrganizationInfoApi: DEFAULT_FUNCTION_RETURN,
   updateOrganization: async () => {}
 });
 
 const OrganizationsProvider = ({ children }: { children: ReactNode }) => {
-  const getOrganizationsApi = useFunction(OrganizationsApi.getOrganizations);
+  const getOrganizationInfoApi = useFunction(OrganizationsApi.getUserOrganizationInfo);
 
   const updateOrganization = useCallback(
-    async (organization: Partial<Omit<Organization, 'id'>>, id: string) => {
+    async (organization: Partial<Omit<Organization, 'id'>>) => {
       try {
-        await OrganizationsApi.updateOrganization(organization, id);
-        getOrganizationsApi.setData(
-          (getOrganizationsApi.data || []).map((c) =>
-            c.id === id ? Object.assign(c, organization) : c
-          )
-        );
+        const organizationId = getOrganizationInfoApi?.data?.id;
+        await OrganizationsApi.updateOrganization(organization);
+        getOrganizationInfoApi.setData({
+          ...organization,
+          organizationId
+        } as unknown as OrganizationDetail);
       } catch (error) {
         throw error;
       }
     },
-    [getOrganizationsApi]
+    [getOrganizationInfoApi]
   );
 
   useEffect(() => {
-    getOrganizationsApi.call(new FormData());
+    getOrganizationInfoApi.call(new FormData());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <OrganizationsContext.Provider
       value={{
-        getOrganizationsApi,
+        getOrganizationInfoApi,
         updateOrganization
       }}
     >

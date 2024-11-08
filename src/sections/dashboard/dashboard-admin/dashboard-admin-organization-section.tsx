@@ -19,6 +19,7 @@ import { useDrawer } from 'src/hooks/use-drawer';
 import { useAuth } from 'src/hooks/use-auth';
 import DashboardAddEmployeeDialog from './dashboard-admin-add-employee-dialog';
 import DashboardAdminEditDrawer from './dashboard-admin-edit-drawer';
+import { formatDate, formatUnixTimestamp } from 'src/utils/format-time-currency';
 
 function DashboardAdminOrganizationSection() {
   const { showSnackbarSuccess } = useAppSnackbar();
@@ -28,11 +29,12 @@ function DashboardAdminOrganizationSection() {
   const editOrganizationDrawer = useDrawer<OrganizationDetail>();
 
   const getDocumentsApi = useFunction(DocumentsApi.getDocuments);
+  const getOrganizationEmployeesApi = useFunction(OrganizationsApi.getOrganizationEmployees);
 
   useEffect(() => {
     const fetchOrganization = async () => {
       try {
-        const response = await OrganizationsApi.getOrganization(user?.id as string);
+        const response = await OrganizationsApi.getUserOrganizationInfo();
         setOrganization(response);
       } catch (error) {
         throw error;
@@ -60,12 +62,19 @@ function DashboardAdminOrganizationSection() {
     return documentsCountByMonth;
   }, [documents]);
 
-  const employees = generateEmployees(20);
+  const employees = useMemo(() => {
+    return getOrganizationEmployeesApi.data?.employeeList || [];
+  }, [getOrganizationEmployeesApi.data]);
 
   const employeesByMonth = useMemo(() => {
     const months = Array.from({ length: 12 }, (_, index) => index + 1);
     const employeesCountByMonth = months.map((month) => {
-      return employees.filter((emp) => new Date(emp.created_at).getMonth() + 1 === month).length;
+      return employees.filter(
+        (emp) =>
+          emp.role === 'EMPLOYEE' &&
+          emp.createdAt &&
+          new Date(formatUnixTimestamp(emp.createdAt)).getMonth() + 1 === month
+      ).length;
     });
     return employeesCountByMonth;
   }, [employees]);
@@ -114,6 +123,7 @@ function DashboardAdminOrganizationSection() {
 
   useEffect(() => {
     getDocumentsApi.call({});
+    getOrganizationEmployeesApi.call({});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
