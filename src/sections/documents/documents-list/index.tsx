@@ -47,14 +47,13 @@ function DocListIndex() {
 
   const DocumentManagementConfig = useMemo(() => {
     return getDocumentManagementConfig({
-      onClickDownload: (data: Document) => showSnackbarSuccess(`Đang tải tài liệu: ${data.title}`),
-      onClickBookmark: (data: Document) =>
-        showSnackbarSuccess(`Đã đánh dấu tài liệu: ${data.title}`)
+      onClickDownload: (data: Document) => showSnackbarSuccess(`Đang tải tài liệu: ${data.name}`),
+      onClickBookmark: (data: Document) => showSnackbarSuccess(`Đã đánh dấu tài liệu: ${data.name}`)
     });
   }, [getDocumentManagementConfig]);
 
   const handleGoDocument = useCallback(
-    (documentId: string) => {
+    (documentId: number) => {
       router.push({
         pathname: router.pathname,
         query: { ...router.query, documentId }
@@ -104,7 +103,7 @@ function DocListIndex() {
   };
 
   const filterDocuments = useMemo(() => {
-    return documents.filter((doc) => doc.title.toLowerCase().includes(searchTerm.toLowerCase()));
+    return documents.filter((doc) => doc.name.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [documents, searchTerm]);
 
   const pagination = usePagination({
@@ -165,7 +164,7 @@ function DocListIndex() {
                     justifyContent='center'
                     alignItems='center'
                   >
-                    <Image src={renderImage(doc.documentUrl)} alt='pdf' width={100} height={100} />
+                    {/* <Image src={renderImage(doc.name.split('.').pop())} alt='pdf' width={100} height={100} /> */}
                   </Box>
                   <Box
                     p={2}
@@ -176,13 +175,13 @@ function DocListIndex() {
                     gap={0.5}
                   >
                     <Typography variant='subtitle2' className='truncate'>
-                      {doc.title}
+                      {doc.name}
                     </Typography>
                     <Box display={'flex'} alignItems={'center'} gap={0.5}>
                       <Globe size={16} opacity={0.8} />
-                      <Typography variant='subtitle2' className='truncate opacity-70'>
-                        {formateDateWithLongMonth(doc.createdAt ?? new Date())}
-                      </Typography>
+                      {/* <Typography variant='subtitle2' className='truncate opacity-70'>
+                        {formateDateWithLongMonth(doc.versions[0].createdAt ?? new Date())}
+                      </Typography> */}
                       <Box
                         padding={0.5}
                         display={'flex'}

@@ -9,7 +9,7 @@ import { DocumentDetail, Document } from 'src/types/document';
 interface ContextValue {
   getDocumentsApi: UseFunctionReturnType<FormData, DocumentDetail[]>;
   uploadDocument: (request: UploadDocumentRequest) => Promise<void>;
-  updateDocument: (document: Partial<DocumentDetail>, id: string) => Promise<void>;
+  updateDocument: (document: Partial<DocumentDetail>, id: number) => Promise<void>;
   deleteDocument: (id: DocumentDetail['id']) => Promise<void>;
 }
 
@@ -38,7 +38,7 @@ const DocumentsProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const updateDocument = useCallback(
-    async (document: Partial<DocumentDetail>, id: string) => {
+    async (document: Partial<DocumentDetail>, id: number) => {
       try {
         await DocumentsApi.updateDocument(document, id);
         getDocumentsApi.setData(

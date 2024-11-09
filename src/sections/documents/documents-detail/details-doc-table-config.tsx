@@ -14,7 +14,7 @@ type DisplayRowsConfigProps = {
 
 const DisplayRowsConfig: FC<DisplayRowsConfigProps> = ({ rowData }) => {
   const rowDataType = useMemo(() => {
-    const type = rowData?.documentUrl.split('.').pop();
+    const type = rowData?.name.split('.').pop();
     switch (type) {
       case 'xlsx':
       case 'xls':
@@ -34,10 +34,10 @@ const DisplayRowsConfig: FC<DisplayRowsConfigProps> = ({ rowData }) => {
 
   const displayrowData = useMemo(() => {
     return [
-      { label: 'Tiêu đề', value: rowData?.title },
-      { label: 'Mô tả', value: rowData?.description },
-      { label: 'Danh mục', value: rowData?.category },
-      { label: 'Từ khóa', value: rowData?.keywords },
+      { label: 'Tiêu đề', value: rowData?.name },
+      { label: 'Mô tả', value: rowData?.versions[0].description },
+      { label: 'Danh mục', value: rowData?.versions[0].category },
+      { label: 'Từ khóa', value: rowData?.versions[0].keywords },
       {
         label: 'Kiểu',
         value: rowDataType.image ? (
@@ -46,14 +46,18 @@ const DisplayRowsConfig: FC<DisplayRowsConfigProps> = ({ rowData }) => {
           'N/A'
         )
       },
-      { label: 'Kích cỡ', value: rowData?.fileSize },
+      { label: 'Kích cỡ', value: rowData?.versions[0].fileSize },
       {
         label: 'Ngày tạo',
-        value: rowData?.createdAt ? formatDate(new Date(rowData.createdAt)) : 'N/A'
+        value: rowData?.versions[0].createdAt
+          ? formatDate(new Date(rowData.versions[0].createdAt))
+          : 'N/A'
       },
       {
         label: 'Ngày cập nhật',
-        value: rowData?.updatedAt ? formatDate(new Date(rowData.updatedAt)) : 'N/A'
+        value: rowData?.versions[0].updatedAt
+          ? formatDate(new Date(rowData.versions[0].updatedAt))
+          : 'N/A'
       }
     ];
   }, [rowData, rowDataType]);
