@@ -18,9 +18,9 @@ const DetailsTable: React.FC<{ document: DocumentDetail }> = ({ document }) => {
     <Box className='flex gap-2 h-screen'>
       <Box className='w-[70%] h-full overflow-auto'>
         {fileType === 'pdf' || fileType === 'docx' || fileType === 'doc' ? (
-          <CustomFileViewer documentUrl={document.versions[0].documentUrl} fileType={'docx'} />
+          <CustomFileViewer documentUrl={document.versions[0].documentUrl} fileType={fileType} />
         ) : (
-          <AdvancedViewer documentUrl={document?.versions[0].documentUrl} fileType={'xls'} />
+          <AdvancedViewer documentUrl={document?.versions[0].documentUrl} fileType={fileType} />
         )}
       </Box>
       <Box className='w-[30%] h-full overflow-auto flex flex-col px-6'>
