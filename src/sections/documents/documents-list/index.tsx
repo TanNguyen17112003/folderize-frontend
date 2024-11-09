@@ -169,7 +169,12 @@ function DocListIndex() {
                     justifyContent='center'
                     alignItems='center'
                   >
-                    {/* <Image src={renderImage(doc.name.split('.').pop())} alt='pdf' width={100} height={100} /> */}
+                    <Image
+                      src={renderImage(doc.versions[0].fileType)}
+                      alt='pdf'
+                      width={100}
+                      height={100}
+                    />
                   </Box>
                   <Box
                     p={2}
@@ -184,9 +189,11 @@ function DocListIndex() {
                     </Typography>
                     <Box display={'flex'} alignItems={'center'} gap={0.5}>
                       <Globe size={16} opacity={0.8} />
-                      {/* <Typography variant='subtitle2' className='truncate opacity-70'>
-                        {formateDateWithLongMonth(doc.versions[0].createdAt ?? new Date())}
-                      </Typography> */}
+                      <Typography variant='subtitle2' className='truncate opacity-70'>
+                        {formateDateWithLongMonth(
+                          new Date(doc.versions[0].createdAt) ?? new Date()
+                        )}
+                      </Typography>
                       <Box
                         padding={0.5}
                         display={'flex'}

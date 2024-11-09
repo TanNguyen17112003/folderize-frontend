@@ -34,18 +34,16 @@ function RegisterStep3() {
 
   const handleCompleteSignUp = useCallback(
     async (values: SignUpRequest | AdminSignUpRequest) => {
-      if (role === 'ADMIN') {
-        await UsersApi.completeAdminSignUp(values as AdminSignUpRequest);
-        router.push(paths.auth.login);
-      } else {
-        await completeSignUp(values as SignUpRequest);
-      }
+      await completeSignUp(values as SignUpRequest);
     },
-    [role, router, completeSignUp]
+    [role, completeSignUp]
   );
 
   const handleCompleteSignUpHelper = useFunction(handleCompleteSignUp, {
-    successMessage: 'Đăng ký thành công!'
+    successMessage: 'Đăng ký thành công!',
+    onSuccess: () => {
+      router.push(paths.auth.login);
+    }
   });
 
   const formik = useFormik<

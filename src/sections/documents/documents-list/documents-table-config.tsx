@@ -16,25 +16,25 @@ const getDocumentManagementConfig = ({
     key: 'title',
     headerLabel: 'Tài liệu',
     type: 'string',
-    renderCell: (data) => <Typography>{data.title}</Typography>
+    renderCell: (data) => <Typography>{data.name}</Typography>
   },
   {
     key: 'description',
     headerLabel: 'Mô tả',
     type: 'string',
-    renderCell: (data) => <Typography>{data.description}</Typography>
+    renderCell: (data) => <Typography>{data.versions[0].description}</Typography>
   },
   {
     key: 'keyword',
     headerLabel: 'Từ khóa',
     type: 'string',
-    renderCell: (data) => <Typography>{JSON.stringify(data.keywords)}</Typography>
+    renderCell: (data) => <Typography>{JSON.stringify(data.versions[0].keywords)}</Typography>
   },
   {
     key: 'size',
     headerLabel: 'Kích thước',
     type: 'string',
-    renderCell: (data) => <Typography>{data.fileSize}</Typography>
+    renderCell: (data) => <Typography>{data.versions[0].fileSize}</Typography>
   },
   {
     key: 'action',

@@ -2,9 +2,9 @@
  * UPDATE 15/01/2024
  * - update: add MAX_CACHED_ARRAY
  */
-import { useState, useCallback } from "react";
-import useAppSnackbar from "./use-app-snackbar";
-import { get, set, del } from "idb-keyval";
+import { useState, useCallback } from 'react';
+import useAppSnackbar from './use-app-snackbar';
+import { get, set, del } from 'idb-keyval';
 
 const MAX_CACHED_ARRAY = 2000;
 type ApiFunction<P, T> = (payload: P) => Promise<T>;
@@ -34,7 +34,7 @@ export const DEFAULT_FUNCTION_RETURN: UseFunctionReturnType<any, any> = {
   error: null,
   data: undefined,
   setData: () => {},
-  reset: () => {},
+  reset: () => {}
 };
 
 function useFunction<P, T>(
@@ -59,9 +59,7 @@ function useFunction<P, T>(
       if (options?.cacheKey) {
         await set(
           options.cacheKey,
-          JSON.stringify(
-            Array.isArray(result) ? result.slice(0, MAX_CACHED_ARRAY) : result
-          )
+          JSON.stringify(Array.isArray(result) ? result.slice(0, MAX_CACHED_ARRAY) : result)
         );
       }
       return { data: result };
@@ -79,7 +77,7 @@ function useFunction<P, T>(
           options?.fixedPayload
             ? {
                 ...payload,
-                ...options?.fixedPayload,
+                ...options?.fixedPayload
               }
             : payload
         );
@@ -117,9 +115,7 @@ function useFunction<P, T>(
         if (data) {
           set(
             options.cacheKey,
-            JSON.stringify(
-              Array.isArray(data) ? data.slice(0, MAX_CACHED_ARRAY) : data
-            )
+            JSON.stringify(Array.isArray(data) ? data.slice(0, MAX_CACHED_ARRAY) : data)
           );
         } else {
           del(options.cacheKey);
