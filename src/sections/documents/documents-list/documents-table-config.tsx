@@ -5,6 +5,8 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { Document } from 'src/types/document';
 import { Bookmark, DocumentDownload } from 'iconsax-react';
+import { bytesToSize } from 'src/utils/bytes-to-size';
+
 const getDocumentManagementConfig = ({
   onClickDownload,
   onClickBookmark
@@ -24,17 +26,12 @@ const getDocumentManagementConfig = ({
     type: 'string',
     renderCell: (data) => <Typography>{data.versions[0].description}</Typography>
   },
-  {
-    key: 'keyword',
-    headerLabel: 'Từ khóa',
-    type: 'string',
-    renderCell: (data) => <Typography>{JSON.stringify(data.versions[0].keywords)}</Typography>
-  },
+
   {
     key: 'size',
     headerLabel: 'Kích thước',
     type: 'string',
-    renderCell: (data) => <Typography>{data.versions[0].fileSize}</Typography>
+    renderCell: (data) => <Typography>{bytesToSize(data.versions[0].fileSize)}</Typography>
   },
   {
     key: 'action',

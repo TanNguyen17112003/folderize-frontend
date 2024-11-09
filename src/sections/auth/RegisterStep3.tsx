@@ -34,7 +34,12 @@ function RegisterStep3() {
 
   const handleCompleteSignUp = useCallback(
     async (values: SignUpRequest | AdminSignUpRequest) => {
-      await completeSignUp(values as SignUpRequest);
+      if (role === 'ADMIN') {
+        await UsersApi.completeAdminSignUp(values as AdminSignUpRequest);
+        router.push(paths.auth.login);
+      } else {
+        await completeSignUp(values as SignUpRequest);
+      }
     },
     [role, completeSignUp]
   );

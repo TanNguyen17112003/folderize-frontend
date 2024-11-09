@@ -22,12 +22,6 @@ const getUserManangementTableConfig = ({
     renderCell: (data) => <Typography>{data.fullName}</Typography>
   },
   {
-    key: 'createdAt',
-    headerLabel: 'Thời gian tham gia',
-    type: 'string',
-    renderCell: (data) => <Typography>{formatDate(formatUnixTimestamp(data.createdAt))}</Typography>
-  },
-  {
     key: 'email',
     headerLabel: 'Email',
     type: 'string',
