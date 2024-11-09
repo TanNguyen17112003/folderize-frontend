@@ -164,7 +164,12 @@ function DocListIndex() {
                     justifyContent='center'
                     alignItems='center'
                   >
-                    {/* <Image src={renderImage(doc.name.split('.').pop())} alt='pdf' width={100} height={100} /> */}
+                    <Image
+                      src={renderImage(doc.name.split('.').pop() || null)}
+                      alt='pdf'
+                      width={100}
+                      height={100}
+                    />
                   </Box>
                   <Box
                     p={2}

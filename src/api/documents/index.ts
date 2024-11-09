@@ -49,7 +49,7 @@ export class DocumentsApi {
     return await apiGet('/documents', request);
   }
 
-  static async getDocumentVersions(documentId: string): Promise<DocumentVersion[]> {
+  static async getDocumentVersions(documentId: number): Promise<DocumentDetail> {
     return await apiGet(`/documents/${documentId}/versions`, {});
   }
 
