@@ -140,6 +140,11 @@ function DocListIndex() {
       <Box mt={2}>
         {layout === 'card' ? (
           <Grid container spacing={4}>
+            {filterDocuments.length === 0 && (
+              <Typography variant='h6' className='text-center'>
+                Không có tài liệu nào
+              </Typography>
+            )}
             {filterDocuments.map((doc) => (
               <Grid key={doc.id}>
                 <Card
