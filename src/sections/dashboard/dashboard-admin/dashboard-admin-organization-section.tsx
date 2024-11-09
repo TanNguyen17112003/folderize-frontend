@@ -52,15 +52,15 @@ function DashboardAdminOrganizationSection() {
     showSnackbarSuccess('Đã sao chép email');
   }, [showSnackbarSuccess]);
 
-  const documentsByMonth = useMemo(() => {
-    const months = Array.from({ length: 12 }, (_, index) => index + 1);
-    const documentsCountByMonth = months.map((month) => {
-      return documents.filter(
-        (doc) => doc.createdAt && new Date(doc.createdAt).getMonth() + 1 === month
-      ).length;
-    });
-    return documentsCountByMonth;
-  }, [documents]);
+  // const documentsByMonth = useMemo(() => {
+  //   const months = Array.from({ length: 12 }, (_, index) => index + 1);
+  //   const documentsCountByMonth = months.map((month) => {
+  //     return documents.filter(
+  //       (doc) => doc.createdAt && new Date(doc.createdAt).getMonth() + 1 === month
+  //     ).length;
+  //   });
+  //   return documentsCountByMonth;
+  // }, [documents]);
 
   const employees = useMemo(() => {
     return getOrganizationEmployeesApi.data?.employeeList || [];
@@ -205,11 +205,11 @@ function DashboardAdminOrganizationSection() {
         </Stack>
       </Stack>
       <Stack width={'40%'} borderLeft={0.5} paddingLeft={2}>
-        <Chart
+        {/* <Chart
           title='Biểu đồ tài liệu'
           options={documentsByMonthChartOptions}
           series={[{ name: 'Số lượng tài liệu', data: documentsByMonth }]}
-        />
+        /> */}
         <Chart
           title='Biểu đồ nhân viên'
           options={employeesByMonthChartOptions}
