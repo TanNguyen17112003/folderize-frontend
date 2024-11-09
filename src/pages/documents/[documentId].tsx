@@ -18,7 +18,7 @@ const DashboardPage: PageType = memo(() => {
   const router = useRouter();
   const { getDocumentsApi } = useDocumentsContext();
   const foundDocument = useMemo(() => {
-    return getDocumentsApi.data?.find((doc) => doc.id == router.query.documentId);
+    return getDocumentsApi.data?.find((doc) => doc.id == Number(router.query.documentId));
   }, [router, getDocumentsApi.data]);
   const options: TabOption[] = useMemo(
     () => [
