@@ -44,7 +44,7 @@ function DashboardIndex() {
       },
       {
         title: 'Số tổ chức',
-        amount: organizations,
+        amount: organizations || 0,
         icon: <Building className='h-10 w-10' color='black' variant='Bold' />
       }
     ],
@@ -109,7 +109,7 @@ function DashboardIndex() {
               <Box>
                 <Typography>{info.title}</Typography>
                 <Typography fontWeight={'bold'} fontSize={18}>
-                  {info.amount}
+                  {info.amount > 0 ? info.amount : '0'}
                 </Typography>
               </Box>
             </Stack>

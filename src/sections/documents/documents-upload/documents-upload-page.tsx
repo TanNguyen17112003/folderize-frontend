@@ -167,14 +167,14 @@ const DocumentUploadPage = () => {
         onClose={editDocumentDrawer.handleClose}
         file={editDocumentDrawer.data as FileWithId}
         onSubmit={(data) => {
-          const uploadFile = {
+          const uploadFile: UploadDocumentRequest = {
             file: originalFiles[0],
-            data: JSON.stringify({
-              title: data.title,
-              description: data.description,
-              category: data.category,
-              keywords: data.keywords.join(', ')
-            })
+            title: data.title,
+            description: data.description,
+            category: data.category,
+            keywords: data.keywords.join(', '),
+            version: '1.0',
+            changeNote: 'Initial upload'
           };
           setUploadFile(uploadFile);
           setCompleteFillDrawer(true);
