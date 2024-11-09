@@ -218,7 +218,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
           user: {
             id: response.id,
             fullName: response.fullName,
-            created_at: response.created_at,
+            createdAt: response.createdAt,
             email: response.email,
             phone: response.phone,
             role: 'USER'

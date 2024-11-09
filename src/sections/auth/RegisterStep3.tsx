@@ -34,18 +34,14 @@ function RegisterStep3() {
 
   const handleCompleteSignUp = useCallback(
     async (values: SignUpRequest | AdminSignUpRequest) => {
-      try {
-        if (role === 'ADMIN') {
-          await UsersApi.completeAdminSignUp(values as AdminSignUpRequest);
-          router.push(paths.auth.login);
-        } else {
-          await completeSignUp(values as SignUpRequest);
-        }
-      } catch (error: any) {
-        console.error(error);
+      if (role === 'ADMIN') {
+        await UsersApi.completeAdminSignUp(values as AdminSignUpRequest);
+        router.push(paths.auth.login);
+      } else {
+        await completeSignUp(values as SignUpRequest);
       }
     },
-    [role, completeSignUp, paths]
+    [role, router, completeSignUp]
   );
 
   const handleCompleteSignUpHelper = useFunction(handleCompleteSignUp, {
