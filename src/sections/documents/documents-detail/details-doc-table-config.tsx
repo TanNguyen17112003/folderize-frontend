@@ -7,6 +7,7 @@ import Word from 'public/ui/word.png';
 import Ppt from 'public/ui/powerpoint.png';
 import Image from 'next/image';
 import { formatDate } from 'src/utils/format-time-currency';
+import { bytesToSize } from 'src/utils/bytes-to-size';
 
 type DisplayRowsConfigProps = {
   rowData: DocumentDetail;
@@ -37,7 +38,6 @@ const DisplayRowsConfig: FC<DisplayRowsConfigProps> = ({ rowData }) => {
       { label: 'Tiêu đề', value: rowData?.name },
       { label: 'Mô tả', value: rowData?.versions[0].description },
       { label: 'Danh mục', value: rowData?.versions[0].category },
-      { label: 'Từ khóa', value: rowData?.versions[0].keywords },
       {
         label: 'Kiểu',
         value: rowDataType.image ? (
@@ -46,7 +46,7 @@ const DisplayRowsConfig: FC<DisplayRowsConfigProps> = ({ rowData }) => {
           'N/A'
         )
       },
-      { label: 'Kích cỡ', value: rowData?.versions[0].fileSize },
+      { label: 'Kích cỡ', value: bytesToSize(rowData?.versions[0].fileSize) },
       {
         label: 'Ngày tạo',
         value: rowData?.versions[0].createdAt

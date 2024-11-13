@@ -140,6 +140,11 @@ function DocListIndex() {
       <Box mt={2}>
         {layout === 'card' ? (
           <Grid container spacing={4}>
+            {filterDocuments.length === 0 && (
+              <Typography variant='h6' className='text-center'>
+                Không có tài liệu nào
+              </Typography>
+            )}
             {filterDocuments.map((doc) => (
               <Grid key={doc.id}>
                 <Card
@@ -165,7 +170,7 @@ function DocListIndex() {
                     alignItems='center'
                   >
                     <Image
-                      src={renderImage(doc.name.split('.').pop() || null)}
+                      src={renderImage(doc.versions[0].fileType)}
                       alt='pdf'
                       width={100}
                       height={100}
@@ -184,9 +189,11 @@ function DocListIndex() {
                     </Typography>
                     <Box display={'flex'} alignItems={'center'} gap={0.5}>
                       <Globe size={16} opacity={0.8} />
-                      {/* <Typography variant='subtitle2' className='truncate opacity-70'>
-                        {formateDateWithLongMonth(doc.versions[0].createdAt ?? new Date())}
-                      </Typography> */}
+                      <Typography variant='subtitle2' className='truncate opacity-70'>
+                        {formateDateWithLongMonth(
+                          new Date(doc.versions[0].createdAt) ?? new Date()
+                        )}
+                      </Typography>
                       <Box
                         padding={0.5}
                         display={'flex'}

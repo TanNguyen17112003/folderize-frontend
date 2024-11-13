@@ -21,16 +21,12 @@ function RegisterStep1({ onNextStep }: RegisterStep1Props) {
 
   const handleInitiateSignUp = useCallback(
     async (email: string) => {
-      try {
-        if (isAdmin) {
-          await UsersApi.initiateAdminSignUp({ email });
-        } else {
-          await initiateSignUp({ email });
-        }
-        onNextStep(); // Call the callback function to navigate to the next step
-      } catch (error: any) {
-        console.error(error);
+      if (isAdmin) {
+        await UsersApi.initiateAdminSignUp({ email });
+      } else {
+        await initiateSignUp({ email });
       }
+      onNextStep(); // Call the callback function to navigate to the next step
     },
     [initiateSignUp, onNextStep, isAdmin]
   );

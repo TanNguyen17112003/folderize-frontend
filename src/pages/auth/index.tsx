@@ -42,7 +42,11 @@ const Page: PageType = () => {
         const user = await signIn(values.email, values.password);
         console.log('user', user);
         if (isMounted() && user) {
-          router.replace(paths.dashboard.index);
+          if (user.role === 'ADMIN') {
+            router.replace(paths.dashboard.index);
+          } else {
+            router.replace(paths.documents.index);
+          }
         }
       } catch (error) {
         setFieldError('general', 'Vui lòng kiểm tra lại Tên đăng nhập/Mật khẩu');
