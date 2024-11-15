@@ -19,7 +19,7 @@ const DocumentListIndex = () => {
     >
       <ContentHeader
         title='Danh sách tài liệu'
-        description='Danh sách tài liệu của bạn'
+        description='Danh sách tài liệu của hệ thống'
         rightSection={
           user &&
           user.role !== 'USER' && (

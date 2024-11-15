@@ -1,5 +1,11 @@
 import { FileData } from 'src/types/file-data';
-import { DocumentDetail, Document, DocumentVersion } from 'src/types/document';
+import {
+  DocumentDetail,
+  Document,
+  DocumentVersion,
+  DocumentComment,
+  DocumentCommentRequest
+} from 'src/types/document';
 import { apiGet, apiPost, apiDelete } from 'src/utils/api-request';
 export interface UploadDocumentRequest {
   file: File;
@@ -72,5 +78,16 @@ export class DocumentsApi {
 
   static async deleteDocument(documentId: DocumentDetail['id']) {
     return await apiDelete(`/documents/` + documentId, {});
+  }
+
+  static async postComment(
+    request: DocumentCommentRequest,
+    documentId: number
+  ): Promise<DocumentComment> {
+    return await apiPost(`/documents/${documentId}/comments`, request);
+  }
+
+  static async getComments(documentId: number): Promise<DocumentComment[]> {
+    return await apiGet(`/documents/${documentId}/comments`, {});
   }
 }

@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
 import React, { FC, useMemo } from 'react';
-import { DocumentDetail } from 'src/types/document';
+import { DocumentDetail, DocumentVersion } from 'src/types/document';
 import Excel from 'public/ui/excel.png';
 import Pdf from 'public/ui/pdf.png';
 import Word from 'public/ui/word.png';
@@ -10,12 +10,12 @@ import { formatDate } from 'src/utils/format-time-currency';
 import { bytesToSize } from 'src/utils/bytes-to-size';
 
 type DisplayRowsConfigProps = {
-  rowData: DocumentDetail;
+  rowData: DocumentVersion;
 };
 
 const DisplayRowsConfig: FC<DisplayRowsConfigProps> = ({ rowData }) => {
   const rowDataType = useMemo(() => {
-    const type = rowData?.name.split('.').pop();
+    const type = rowData?.fileType;
     switch (type) {
       case 'xlsx':
       case 'xls':
@@ -35,9 +35,16 @@ const DisplayRowsConfig: FC<DisplayRowsConfigProps> = ({ rowData }) => {
 
   const displayrowData = useMemo(() => {
     return [
-      { label: 'Tiêu đề', value: rowData?.name },
-      { label: 'Mô tả', value: rowData?.versions[0].description },
-      { label: 'Danh mục', value: rowData?.versions[0].category },
+      { label: 'Phiên bản', value: rowData?.version },
+      { label: 'Tiêu đề', value: rowData?.title },
+      { label: 'Mô tả', value: rowData?.description },
+      { label: 'Danh mục', value: rowData?.category },
+      {
+        label: 'Từ khóa',
+        value: rowData?.keywords.startsWith(', ')
+          ? rowData?.keywords.substring(2)
+          : rowData?.keywords
+      },
       {
         label: 'Kiểu',
         value: rowDataType.image ? (
@@ -46,18 +53,14 @@ const DisplayRowsConfig: FC<DisplayRowsConfigProps> = ({ rowData }) => {
           'N/A'
         )
       },
-      { label: 'Kích cỡ', value: bytesToSize(rowData?.versions[0].fileSize) },
+      { label: 'Kích cỡ', value: bytesToSize(rowData?.fileSize) },
       {
         label: 'Ngày tạo',
-        value: rowData?.versions[0].createdAt
-          ? formatDate(new Date(rowData.versions[0].createdAt))
-          : 'N/A'
+        value: rowData?.createdAt ? formatDate(new Date(rowData.createdAt)) : 'N/A'
       },
       {
         label: 'Ngày cập nhật',
-        value: rowData?.versions[0].updatedAt
-          ? formatDate(new Date(rowData.versions[0].updatedAt))
-          : 'N/A'
+        value: rowData?.updatedAt ? formatDate(new Date(rowData.updatedAt)) : 'N/A'
       }
     ];
   }, [rowData, rowDataType]);

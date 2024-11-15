@@ -1,22 +1,11 @@
-import {
-  Box,
-  Typography,
-  Button,
-  TextField,
-  Grid,
-  Card,
-  CardContent,
-  Avatar,
-  IconButton
-} from '@mui/material';
+import { Typography, Grid, Card, CardContent } from '@mui/material';
 import { Stack } from '@mui/system';
-import React, { useCallback, useMemo, useState } from 'react';
-import { useAuth } from 'src/hooks/use-auth';
+import React, { useCallback, useMemo } from 'react';
 import AccountInfoEditField from './account-info-edit-field';
-import { formatDate, formatUnixTimestamp } from 'src/utils/format-time-currency';
+import { useAuth } from 'src/hooks/use-auth';
 
 function ProfileSection() {
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
 
   const userRole = useMemo(() => {
     return user?.role === 'ADMIN'
@@ -27,10 +16,10 @@ function ProfileSection() {
   }, [user]);
 
   const handleSave = useCallback(
-    async (field: 'fullName' | 'phone' | 'email' | 'created_at' | 'role', value: string) => {
+    async (field: 'fullName' | 'phone', value: string) => {
       try {
         if (field) {
-          await console.log('field', field, 'value', value);
+          await updateProfile({ [field]: value });
         }
       } catch (error) {
         throw error;
@@ -44,7 +33,7 @@ function ProfileSection() {
       <CardContent>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
-            <Typography variant='h6'>Quản lý thông tin</Typography>
+            <Typography variant='h6'>Thông tin cá nhân</Typography>
           </Grid>
           <Grid item xs={12} md={8}>
             <Stack

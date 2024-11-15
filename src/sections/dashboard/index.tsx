@@ -63,7 +63,7 @@ function DashboardIndex() {
         <Stack direction={'row'} gap={2} width={'100%'}>
           <TextField
             variant='outlined'
-            placeholder='Tìm kiếm theo từ khóa...'
+            placeholder='Tìm kiếm theo tên tài liệu...'
             className='w-[90%]'
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}

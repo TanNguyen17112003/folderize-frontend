@@ -1,30 +1,36 @@
 import { Box, Button } from '@mui/material';
-import React, { memo, useEffect, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { CustomTable } from 'src/components/custom-table';
 import type { Page as PageType } from 'src/types/page';
 import { VersionList } from 'src/types/versions';
 import { DocumentsApi } from 'src/api/documents';
 import { useRouter } from 'next/router';
 import useFunction from 'src/hooks/use-function';
+import { DocumentVersion } from 'src/types/document';
 
 const VersionsTable: PageType = memo(() => {
   const router = useRouter();
   const getDocumentVersionsApi = useFunction(DocumentsApi.getDocumentVersions);
-  const versionList = useMemo(() => {
-    return getDocumentVersionsApi.data?.versions || [];
+  const versionList: never[] = useMemo(() => {
+    return (getDocumentVersionsApi.data as unknown as never[]) || [];
   }, [getDocumentVersionsApi.data]);
+
+  const handleGoDocumentVersion = useCallback((versionId: number) => {
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, versionId }
+    });
+  }, []);
   const configs = useMemo(
     () => [
       { key: 'version', headerLabel: 'Phiên bản' },
-      { key: 'updatedAt', headerLabel: 'Updated At' },
-      { key: 'changes', headerLabel: 'Changes' }
+      { key: 'updatedAt', headerLabel: 'Cập nhật lúc' },
+      { key: 'title', headerLabel: 'Tiêu đề' },
+      { key: 'description', headerLabel: 'Mô tả' },
+      { key: 'fileType', headerLabel: 'Kiểu' }
     ],
     []
   );
-
-  const handleViewDoc = (docUrl: string) => {
-    window.open(docUrl, '_blank');
-  };
 
   useEffect(() => {
     getDocumentVersionsApi.call(Number(router.query.documentId));
@@ -36,7 +42,7 @@ const VersionsTable: PageType = memo(() => {
       <CustomTable
         rows={versionList}
         configs={configs}
-        renderRowActions={(row) => <Button variant='outlined'>View</Button>}
+        onClickRow={(data: DocumentVersion) => handleGoDocumentVersion(data.id)}
       />
     </Box>
   );

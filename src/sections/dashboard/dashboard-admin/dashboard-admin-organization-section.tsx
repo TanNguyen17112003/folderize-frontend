@@ -1,9 +1,9 @@
 import { Avatar, Box, Divider, Stack, Typography, Button } from '@mui/material';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { OrganizationDetail, mockOrganization } from 'src/types/organization';
+import { OrganizationDetail } from 'src/types/organization';
 import { Copy } from 'iconsax-react';
 import useAppSnackbar from 'src/hooks/use-app-snackbar';
-import { FaFacebook, FaTwitter } from 'react-icons/fa6';
+import { FaFacebook, FaTwitter, FaX } from 'react-icons/fa6';
 import { EditIcon, MailIcon, PlusIcon } from 'lucide-react';
 import { DocumentsApi } from 'src/api/documents';
 import { OrganizationsApi } from 'src/api/organizations';
@@ -13,13 +13,12 @@ import {
   documentsByMonthChartOptions,
   employeesByMonthChartOptions
 } from 'src/utils/config-charts';
-import { generateEmployees } from 'src/types/user';
 import { useDialog } from 'src/hooks/use-dialog';
 import { useDrawer } from 'src/hooks/use-drawer';
 import { useAuth } from 'src/hooks/use-auth';
 import DashboardAddEmployeeDialog from './dashboard-admin-add-employee-dialog';
 import DashboardAdminEditDrawer from './dashboard-admin-edit-drawer';
-import { formatDate, formatUnixTimestamp } from 'src/utils/format-time-currency';
+import { formatUnixTimestamp } from 'src/utils/format-time-currency';
 
 function DashboardAdminOrganizationSection() {
   const { showSnackbarSuccess } = useAppSnackbar();
@@ -48,9 +47,9 @@ function DashboardAdminOrganizationSection() {
   }, [getDocumentsApi.data]);
 
   const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(mockOrganization?.adminEmail as string);
+    navigator.clipboard.writeText(user?.email as string);
     showSnackbarSuccess('Đã sao chép email');
-  }, [showSnackbarSuccess]);
+  }, [showSnackbarSuccess, user]);
 
   const documentsByMonth = useMemo(() => {
     const months = Array.from({ length: 12 }, (_, index) => index + 1);
@@ -83,16 +82,26 @@ function DashboardAdminOrganizationSection() {
   const contactList = useMemo(() => {
     return [
       {
-        icon: <FaFacebook className='text-black opacity-80 cursor-pointer' size={20} />,
-        content: 'Facebook'
+        icon: (
+          <FaFacebook
+            className='text-black opacity-80 cursor-pointer hover:text-blue-500'
+            size={20}
+          />
+        ),
+        content: 'Facebook',
+        href: 'https://www.facebook.com'
       },
       {
-        icon: <FaTwitter className='text-black opacity-80 cursor-pointer' size={20} />,
-        content: 'Twitter'
+        icon: (
+          <FaX className='text-black opacity-80 cursor-pointer hover:text-blue-500' size={20} />
+        ),
+        content: 'X',
+        href: 'https://www.x.com'
       },
       {
-        icon: <MailIcon className='h-5 w-5 cursor-pointer' color='black' />,
-        content: 'Email'
+        icon: <MailIcon className='h-5 w-5 cursor-pointer hover:text-blue-500' />,
+        content: 'Email',
+        href: 'mailto:' + user?.email
       }
     ];
   }, []);
@@ -156,7 +165,7 @@ function DashboardAdminOrganizationSection() {
             startIcon={<PlusIcon size={20} />}
             variant='contained'
             color='warning'
-            onClick={() => addEmployeeDialog.handleOpen(mockOrganization)}
+            onClick={() => addEmployeeDialog.handleOpen(organization as OrganizationDetail)}
           >
             Thêm nhân viên
           </Button>
@@ -170,9 +179,10 @@ function DashboardAdminOrganizationSection() {
               gap={1}
               width={'33.33%'}
               className='cursor-pointer'
+              onClick={() => window.open(contact.href, '_blank')}
             >
               {contact.icon}
-              <Typography color='black' fontSize={14}>
+              <Typography color='black' fontSize={14} className='hover:text-blue-400'>
                 {contact.content}
               </Typography>
             </Stack>
@@ -205,13 +215,28 @@ function DashboardAdminOrganizationSection() {
           ))}
         </Stack>
       </Stack>
-      <Stack width={'40%'} borderLeft={0.5} paddingLeft={2}>
-        <Chart
-          title='Biểu đồ tài liệu'
-          options={documentsByMonthChartOptions}
-          series={[{ name: 'Số lượng tài liệu', data: documentsByMonth }]}
-          type='line'
-        />
+      <Stack width={'40%'} borderLeft={0.5} paddingLeft={2} gap={2}>
+        <Stack>
+          <Typography textAlign={'center'} color='error' variant='h6'>
+            Biểu đồ số lượng tài liệu hệ thống
+          </Typography>
+          <Chart
+            options={documentsByMonthChartOptions}
+            series={[{ name: 'Số lượng tài liệu', data: documentsByMonth }]}
+            type='line'
+          />
+        </Stack>
+        <Divider />
+        <Stack>
+          <Typography textAlign={'center'} color='primary' variant='h6'>
+            Biểu đồ số lượng nhân viên hệ thống
+          </Typography>
+          <Chart
+            options={employeesByMonthChartOptions}
+            series={[{ name: 'Số lượng nhân viên', data: employeesByMonth }]}
+            type='bar'
+          />
+        </Stack>
       </Stack>
       <DashboardAddEmployeeDialog
         open={addEmployeeDialog.open}

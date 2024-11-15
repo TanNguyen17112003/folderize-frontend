@@ -14,14 +14,28 @@ export interface FileFormProps {
   title: string;
   description: string;
   category: string;
-  keywords: { value: string; label: string }[];
+  keywords: string;
+  changeNote?: string;
+}
+
+export interface FileVersionFormProps extends FileFormProps {
+  version: string;
+  documentId: number;
+  file?: File;
 }
 
 export const initialFileForm: FileFormProps = {
   title: '',
   description: '',
   category: '',
-  keywords: []
+  keywords: '',
+  changeNote: ''
+};
+
+export const initialFileVersionForm: FileVersionFormProps = {
+  ...initialFileForm,
+  version: '',
+  documentId: 0
 };
 
 export interface FileWithId {

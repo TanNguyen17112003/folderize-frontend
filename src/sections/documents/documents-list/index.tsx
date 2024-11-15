@@ -2,7 +2,6 @@ import { EllipsisVerticalIcon } from '@heroicons/react/24/solid';
 import { Bookmark, Delete, Edit } from '@mui/icons-material';
 import {
   Box,
-  Button,
   Card,
   FormControl,
   InputAdornment,
@@ -30,15 +29,26 @@ import { FILE_TYPES } from 'src/utils/file-types';
 import { formateDateWithLongMonth } from 'src/utils/format-time-currency';
 import { useMenu } from 'src/hooks/use-menu';
 import { useAuth } from 'src/hooks/use-auth';
+import clsx from 'clsx';
+import DateRangePickerTextField from 'src/components/date-range-picker-textfield';
+import KeyWordsFilter from 'src/components/keywords-filter/keywords-filter';
+import { filterKeywors } from 'src/utils/filter-keywords';
+import {
+  fastDateRangeFilter,
+  DateRangeProps,
+  initialDateRange
+} from 'src/utils/fast-date-range-filter';
 
 function DocListIndex() {
   const { user } = useAuth();
-  const [searchInput, setSearchInput] = React.useState('');
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const [layout, setLayout] = React.useState('card');
+  const [dateRange, setDateRange] = useState<DateRangeProps>(initialDateRange);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedIndex, setSelectedIndex] = useState<number>();
+  const [layout, setLayout] = useState('card');
   const { showSnackbarSuccess } = useAppSnackbar();
-  const [selectedTab, setSelectedTab] = useState<string>('approved');
   const { getDocumentsApi } = useDocumentsContext();
+  const [keywordFilter, setKeywordFilter] = useState<string>('');
+
   const documents = useMemo(() => {
     return getDocumentsApi.data || [];
   }, [getDocumentsApi.data]);
@@ -98,13 +108,19 @@ function DocListIndex() {
     setLayout(event.target.value as string);
   };
 
-  const handleSearch = () => {
-    setSearchTerm(searchInput);
-  };
-
   const filterDocuments = useMemo(() => {
-    return documents.filter((doc) => doc.name.toLowerCase().includes(searchTerm.toLowerCase()));
-  }, [documents, searchTerm]);
+    const results = documents.filter((doc) => {
+      const createdAt = new Date(doc?.versions[0].createdAt);
+      const keywordMatch = filterKeywors(keywordFilter, doc.versions[0].keywords);
+      return (
+        doc?.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (!dateRange.startDate || createdAt >= dateRange.startDate) &&
+        (!dateRange.endDate || createdAt <= dateRange.endDate) &&
+        keywordMatch
+      );
+    });
+    return results;
+  }, [documents, searchTerm, dateRange, keywordFilter]);
 
   const pagination = usePagination({
     count: filterDocuments.length
@@ -112,13 +128,13 @@ function DocListIndex() {
 
   return (
     <Box className='px-6 py-5'>
-      <Stack direction={'row'} gap={2} width={'100%'} alignItems={'center'}>
+      <Stack direction={'row'} gap={2} width={'100%'} alignItems={'center'} marginBottom={1.5}>
         <TextField
           variant='outlined'
-          placeholder='Tìm kiếm theo từ khóa...'
-          className='w-[70%]'
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
+          placeholder='Tìm kiếm theo tên tài liệu...'
+          className='w-[80%]'
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
             startAdornment: (
               <InputAdornment position='end'>
@@ -127,9 +143,6 @@ function DocListIndex() {
             )
           }}
         />
-        <Button variant='contained' className='w-[10%]' onClick={handleSearch}>
-          Tìm kiếm
-        </Button>
         <FormControl variant='outlined' className='w-[20%]'>
           <Select value={layout} onChange={handleLayoutChange}>
             <MenuItem value='card'>Danh sách dạng lưới</MenuItem>
@@ -137,11 +150,55 @@ function DocListIndex() {
           </Select>
         </FormControl>
       </Stack>
+      <Stack direction={'row'} gap={2} alignItems={'center'}>
+        <Box className='w-[20%]'>
+          <DateRangePickerTextField
+            initialDateRange={{
+              startDate: dateRange.startDate ?? undefined,
+              endDate: dateRange.endDate ?? undefined
+            }}
+            onChange={(dateRange) =>
+              setDateRange({
+                startDate: dateRange.startDate ?? null,
+                endDate: dateRange.endDate ?? null
+              })
+            }
+            labelHolder='Nhập thời gian tạo tài liệu mới nhất'
+          />
+        </Box>
+        <Box className='w-[60%]'>
+          <Stack direction={'row'} width={'100%'}>
+            {fastDateRangeFilter.map((filter, index) => (
+              <Box
+                key={index}
+                className={clsx(
+                  'rounded-none px-5 py-4 border cursor-pointer',
+                  index === 0 && 'rounded-l-lg',
+                  index === fastDateRangeFilter.length - 1 && 'rounded-r-lg',
+                  index === selectedIndex && 'bg-blue-500 text-white'
+                )}
+                onClick={() => {
+                  setDateRange({
+                    startDate: filter.value.startDate,
+                    endDate: new Date(filter.value.endDate)
+                  });
+                  setSelectedIndex(index as number);
+                }}
+              >
+                {filter.label}
+              </Box>
+            ))}
+          </Stack>
+        </Box>
+        <Box className='w-[20%]'>
+          <KeyWordsFilter onApplyFilter={setKeywordFilter} />
+        </Box>
+      </Stack>
       <Box mt={2}>
         {layout === 'card' ? (
-          <Grid container spacing={4}>
+          <Grid container spacing={4} width={'100%'}>
             {filterDocuments.length === 0 && (
-              <Typography variant='h6' className='text-center'>
+              <Typography variant='h6' textAlign={'center'}>
                 Không có tài liệu nào
               </Typography>
             )}
@@ -219,14 +276,6 @@ function DocListIndex() {
             ))}
           </Grid>
         ) : (
-          <CustomTable
-            rows={filterDocuments}
-            configs={DocumentManagementConfig}
-            onClickRow={(data: Document) => handleGoDocument(data.id)}
-            pagination={pagination}
-          />
-        )}
-        {selectedTab === 'not approved' && (
           <CustomTable
             rows={filterDocuments}
             configs={DocumentManagementConfig}

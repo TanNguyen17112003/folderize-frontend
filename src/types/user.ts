@@ -4,7 +4,7 @@ type UserRole = 'ADMIN' | 'USER' | 'EMPLOYEE';
 
 export interface User {
   index?: number;
-  id: string;
+  id: number;
   email: string;
   fullName: string;
   phone: string;
@@ -23,7 +23,7 @@ export const userSchema = yup.object().shape({
 });
 
 export const initialUser: UserDetail = {
-  id: '',
+  id: 0,
   email: '',
   fullName: '',
   phone: '',
@@ -42,7 +42,7 @@ export const generateEmployees = (count: number): UserDetail[] => {
   const employees: UserDetail[] = [];
   for (let i = 0; i < count; i++) {
     employees.push({
-      id: `emp-${i + 1}`,
+      id: i + 1,
       email: `employee${i + 1}@example.com`,
       fullName: `Employee ${i + 1}`,
       phone: `123-456-789${i}`,
