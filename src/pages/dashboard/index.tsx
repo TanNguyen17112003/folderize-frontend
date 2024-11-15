@@ -21,8 +21,15 @@ const Page: PageType = () => {
           !user
             ? 'Tổng quan hệ thống'
             : user?.role === 'ADMIN'
-              ? 'Tổng quan hệ thống'
+              ? 'Tổng quan tổ chức'
               : 'Hoạt động gần đây'
+        }
+        description={
+          !user
+            ? ''
+            : user?.role === 'ADMIN'
+              ? 'Thông tin tổ chức và cá nhân'
+              : 'Hoạt động gần đây của bạn'
         }
       />
       <DashboardIndex />

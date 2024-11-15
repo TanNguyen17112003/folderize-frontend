@@ -6,7 +6,7 @@ export const getDashboardAdminConfigs = () => {
       subheader: 'Quản Lý',
       items: [
         {
-          title: 'Tổng Quan Hệ Thống',
+          title: 'Tổng Quan Tổ Chức',
           path: paths.dashboard.index,
           icon: <PresentionChart className='h-5 w-5' />
         },

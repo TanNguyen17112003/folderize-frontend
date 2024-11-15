@@ -1,7 +1,7 @@
 import type { FC, ReactNode } from 'react';
 import { createContext, useCallback, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
-import { UsersApi } from 'src/api/users';
+import { UpdateProfileRequest, UsersApi } from 'src/api/users';
 import type { UserDetail } from 'src/types/user';
 import { Issuer } from 'src/utils/auth';
 import CookieHelper, { CookieKeys } from 'src/utils/cookie-helper';
@@ -19,7 +19,8 @@ enum ActionType {
   INITIALIZE = 'INITIALIZE',
   SIGN_IN = 'SIGN_IN',
   SIGN_UP = 'SIGN_UP',
-  SIGN_OUT = 'SIGN_OUT'
+  SIGN_OUT = 'SIGN_OUT',
+  UPDATE_PROFILE = 'UPDATE_PROFILE'
 }
 
 type InitializeAction = {
@@ -48,7 +49,14 @@ type SignOutAction = {
   type: ActionType.SIGN_OUT;
 };
 
-type Action = InitializeAction | SignInAction | SignUpAction | SignOutAction;
+type UpdateProfileAction = {
+  type: ActionType.UPDATE_PROFILE;
+  payload: {
+    user: UserDetail;
+  };
+};
+
+type Action = InitializeAction | SignInAction | SignUpAction | SignOutAction | UpdateProfileAction;
 
 type Handler = (state: State, action: any) => State;
 
@@ -91,6 +99,10 @@ const handlers: Record<ActionType, Handler> = {
     ...state,
     isAuthenticated: false,
     user: null
+  }),
+  UPDATE_PROFILE: (state: State, action: UpdateProfileAction): State => ({
+    ...state,
+    user: action.payload.user
   })
 };
 
@@ -103,6 +115,7 @@ export interface AuthContextType extends State {
   signOut: () => Promise<void>;
   initiateSignUp: (request: InitialSignUpRequest) => Promise<void>;
   completeSignUp: (request: SignUpRequest) => Promise<void>;
+  updateProfile: (request: UpdateProfileRequest) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -111,7 +124,8 @@ export const AuthContext = createContext<AuthContextType>({
   signIn: () => Promise.resolve(undefined),
   initiateSignUp: () => Promise.resolve(),
   completeSignUp: () => Promise.resolve(),
-  signOut: () => Promise.resolve()
+  signOut: () => Promise.resolve(),
+  updateProfile: () => Promise.resolve()
 });
 
 interface AuthProviderProps {
@@ -235,6 +249,30 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     router.push(paths.dashboard.index);
   }, [router]);
 
+  const updateProfile = useCallback(
+    async (request: UpdateProfileRequest) => {
+      try {
+        await UsersApi.updateProfile(request);
+        const currentUserInfo = JSON.parse(CookieHelper.getItem('user_data') as string);
+        const newUserInfo = {
+          ...currentUserInfo,
+          fullName: request.fullName ? request.fullName : currentUserInfo.fullName,
+          phone: request.phone ? request.phone : currentUserInfo.phone
+        };
+        CookieHelper.setItem('user_data', JSON.stringify(newUserInfo));
+        dispatch({
+          type: ActionType.UPDATE_PROFILE,
+          payload: {
+            user: newUserInfo
+          }
+        });
+      } catch (error) {
+        throw error;
+      }
+    },
+    [dispatch]
+  );
+
   return (
     <AuthContext.Provider
       value={{
@@ -243,7 +281,8 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
         signIn,
         signOut,
         initiateSignUp,
-        completeSignUp
+        completeSignUp,
+        updateProfile
       }}
     >
       {children}

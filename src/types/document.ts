@@ -39,3 +39,15 @@ export interface DocumentDetail extends Document {
   body?: any;
   createElement(arg0: string): unknown;
 }
+
+export interface DocumentCommentRequest {
+  comment: string;
+  userId: number;
+}
+
+export interface DocumentComment extends DocumentCommentRequest {
+  id: number;
+  documentId: number;
+  createdAt: string;
+  userFullName: string;
+}

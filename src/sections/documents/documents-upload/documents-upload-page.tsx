@@ -172,7 +172,7 @@ const DocumentUploadPage = () => {
             title: data.title,
             description: data.description,
             category: data.category,
-            keywords: data.keywords.join(', '),
+            keywords: data.keywords.substring(2),
             version: '1.0',
             changeNote: 'Initial upload'
           };

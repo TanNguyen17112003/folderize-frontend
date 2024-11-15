@@ -1,4 +1,4 @@
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { Box, Container, Stack, Typography, Tabs, Tab } from '@mui/material';
 import { memo, useCallback, useMemo } from 'react';
 import CustomTabs, { TabOption } from 'src/components/CustomTabs/CustomTabs';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard';
@@ -12,7 +12,6 @@ import { useRouter } from 'next/router';
 import { ArrowLeft } from 'iconsax-react';
 import { paths } from 'src/paths';
 import { DocumentDetail } from 'src/types/document';
-import CustomFileViewer from 'src/components/FileViewer'; // Import the FileViewer component
 
 const DashboardPage: PageType = memo(() => {
   const router = useRouter();
@@ -59,10 +58,14 @@ const DashboardPage: PageType = memo(() => {
           <ArrowLeft />
           <Typography>Quay lại</Typography>
         </Stack>
-        <ContentHeader title={`Chi tiết tài liệu ${foundDocument?.id}`} />
+        <ContentHeader title={`Chi tiết tài liệu ${foundDocument?.name}`} />
       </Stack>
       <Box sx={{ py: 4 }}>
-        <CustomTabs options={options} />
+        {router.query.versionId ? (
+          <DetailsTable document={foundDocument as DocumentDetail} />
+        ) : (
+          <CustomTabs options={options} />
+        )}
       </Box>
     </Stack>
   );

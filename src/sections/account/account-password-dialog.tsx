@@ -35,8 +35,8 @@ function AccountPasswordDialog({ ...props }: DialogProps) {
         formik.setFieldError('newPasswordConfirm', 'Mật khẩu không khớp');
       }
       const { error } = await updatePasswordApi.call({
-        old_password: values.currentPassword,
-        new_password: values.newPassword
+        currentPassword: values.currentPassword,
+        newPassword: values.newPassword
       });
       if (!error) {
         formik.setValues({

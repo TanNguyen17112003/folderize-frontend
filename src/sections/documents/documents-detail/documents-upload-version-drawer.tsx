@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -15,12 +15,14 @@ import { ArrowBack } from '@mui/icons-material';
 import { Stack } from '@mui/system';
 import { useFormik } from 'formik';
 import useFunction from 'src/hooks/use-function';
-import { FileWithId } from 'src/types/file-data';
-import { FileFormProps, initialFileForm } from 'src/types/file-data';
-import AutocompleteTextFieldMultiple from 'src/components/Autocomplete/autocomplete-textfield-multiple';
-import { formattedValue } from 'src/utils/format-autocomplete';
-import { DocumentsFormTextField } from './documents-text-field';
-function DocumentsUploadEditDrawer({
+import { FileVersionFormProps, initialFileVersionForm } from 'src/types/file-data';
+import { DocumentsFormTextField } from '../documents-upload/documents-text-field';
+import { DocumentDetail } from 'src/types/document';
+import { FileDropzone } from 'src/components/file-dropzone-v2';
+import { File } from 'src/components/file-dropzone-v2';
+import { DocumentsApi } from 'src/api/documents';
+
+function DocumentsUploadVersionDrawer({
   open,
   onClose,
   file,
@@ -28,25 +30,58 @@ function DocumentsUploadEditDrawer({
 }: {
   open: boolean;
   onClose: () => void;
-  file: FileWithId;
-  onSubmit: (data: FileFormProps) => void;
+  file: DocumentDetail;
+  onSubmit: (data: FileVersionFormProps) => void;
 }) {
-  const handleSubmitFile = async (values: FileFormProps) => {
-    onSubmit(values);
-  };
-  const handleSubmitFileHelper = useFunction(handleSubmitFile, {
-    successMessage: 'Cập nhật thông tin tài liệu thành công!'
+  const [files, setFiles] = useState<File[]>([]);
+
+  const handleRemove = useCallback(async (file: File): Promise<void> => {
+    await setFiles((prevFiles) => {
+      return prevFiles.filter((_file) => _file.path !== file.path);
+    });
+  }, []);
+
+  const handleRemoveAll = useCallback(async (): Promise<void> => {
+    await setFiles([]);
+  }, []);
+
+  const handleDrop = useCallback(async (newFiles: File[]) => {
+    if (newFiles.length > 0) {
+      setFiles([newFiles[0]]);
+    }
+  }, []);
+
+  const handleDropHelper = useFunction(handleDrop);
+
+  const handleUploadVersion = useCallback(
+    async (values: FileVersionFormProps) => {
+      try {
+        await DocumentsApi.uploadDocumentVersion({
+          ...values,
+          file: files[0] as File,
+          changeNote: values.changeNote || '',
+          documentId: file.id
+        });
+      } catch (error) {
+        throw error;
+      }
+    },
+    [file, files]
+  );
+
+  const handleUploadVersionHelper = useFunction(handleUploadVersion, {
+    successMessage: 'Tải phiên bản mới của tài liệu thành công'
   });
 
-  const formik = useFormik<FileFormProps>({
+  const formik = useFormik<FileVersionFormProps>({
     initialValues: {
-      ...initialFileForm,
+      ...initialFileVersionForm,
       title: file?.name
     },
     enableReinitialize: true,
     onSubmit: async (values) => {
       try {
-        await handleSubmitFileHelper.call(values);
+        await handleUploadVersionHelper.call(values);
         onClose();
       } catch {
         showSnackbarError('Có lỗi xảy ra');
@@ -119,12 +154,42 @@ function DocumentsUploadEditDrawer({
           </Box>
         </Paper>
         <Stack spacing={3} padding={3}>
+          <FileDropzone
+            title='Tải lên phiên bản mới của tài liệu'
+            accept={{
+              'application/pdf': ['.pdf'],
+              'application/msword': ['.doc'],
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+              'application/vnd.ms-excel': ['.xls'],
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+              'application/vnd.ms-powerpoint': ['.ppt'],
+              'application/vnd.openxmlformats-officedocument.presentationml.presentation': [
+                '.pptx'
+              ],
+              'text/plain': ['.txt']
+            }}
+            caption='Hỗ trợ tải các loại file như: pdf, doc, docx, xls, xlsx, ppt, pptx, txt'
+            type='single'
+            onUpload={() => {}}
+            files={files}
+            onDrop={handleDropHelper.call}
+            onRemove={handleRemove}
+            onRemoveAll={handleRemoveAll}
+          />
           <TextField
             label='Tiêu đề'
             name='title'
             value={formik.values.title}
             onChange={formik.handleChange}
             fullWidth
+          />
+          <TextField
+            label='Phiên bản'
+            name='version'
+            value={formik.values.version}
+            onChange={formik.handleChange}
+            fullWidth
+            placeholder='Vui lòng nhập theo định dạng <số>.<số>'
           />
           <TextField
             label='Mô tả'
@@ -134,6 +199,13 @@ function DocumentsUploadEditDrawer({
             fullWidth
             multiline
             rows={4}
+          />
+          <TextField
+            label='Sự thay đổi'
+            name='changeNote'
+            value={formik.values.changeNote as string}
+            onChange={formik.handleChange}
+            fullWidth
           />
           <FormControl fullWidth>
             <InputLabel>Danh mục</InputLabel>
@@ -167,7 +239,7 @@ function DocumentsUploadEditDrawer({
   );
 }
 
-export default DocumentsUploadEditDrawer;
+export default DocumentsUploadVersionDrawer;
 
 function showSnackbarError(arg0: string) {
   throw new Error('Function not implemented.');

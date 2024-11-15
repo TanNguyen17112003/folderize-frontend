@@ -6,6 +6,11 @@ type SignInRequest = {
   password: string;
 };
 
+export interface UpdateProfileRequest {
+  fullName?: string;
+  phone?: string;
+}
+
 export type InitialSignUpRequest = {
   email: string;
 };
@@ -63,13 +68,13 @@ export class UsersApi {
   }
 
   static async updatePassword(payload: {
-    old_password: string;
-    new_password: string;
-  }): Promise<User> {
-    return await apiPost('/users/password', payload);
+    currentPassword: string;
+    newPassword: string;
+  }): Promise<void> {
+    return await apiPut('/users/update-password', payload);
   }
 
-  static async getUsers(request: {}): Promise<UserDetail[]> {
-    return await apiGet('/users', request);
+  static async updateProfile(payload: UpdateProfileRequest): Promise<void> {
+    return await apiPut('/users/user-info', payload);
   }
 }

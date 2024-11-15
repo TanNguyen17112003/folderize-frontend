@@ -16,6 +16,14 @@ const getUserManangementTableConfig = ({
     renderCell: (data) => <Typography>{data.index}</Typography>
   },
   {
+    key: 'createdAt',
+    headerLabel: 'Thời gian tham gia',
+    type: 'string',
+    renderCell: (data) => (
+      <Typography>{formatDate(formatUnixTimestamp(data?.createdAt))}</Typography>
+    )
+  },
+  {
     key: 'fullName',
     headerLabel: 'Họ và tên',
     type: 'string',
@@ -42,7 +50,7 @@ const getUserManangementTableConfig = ({
         <Trash
           variant='Bold'
           color='red'
-          className='h-5 w-5 cursor-pointer'
+          className='h-8 w-8 cursor-pointer'
           onClick={() => onClickRemove(data)}
         />
       </Stack>

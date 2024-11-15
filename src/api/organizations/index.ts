@@ -19,10 +19,6 @@ interface InvitationResponse {
 }
 
 export class OrganizationsApi {
-  static async getOrganizations(): Promise<OrganizationDetail[]> {
-    return await apiGet('/organizations');
-  }
-
   static async getNumberOfOrganizations() {
     return await apiGet('/organizations/count');
   }
@@ -43,11 +39,19 @@ export class OrganizationsApi {
     return await apiGet('/organizations/employees', request);
   }
 
+  static async deleteOrganizationEmployee(userId: number): Promise<void> {
+    return await apiDelete(`/organizations/employees/?userId=${userId}`, {});
+  }
+
   static async sendInvitation(request: InvitationRequest) {
     return await apiPost('/organizations/initiate-invitation', request);
   }
 
   static async completeInvitation(request: InvitationResponse) {
     return await apiPost('/organizations/complete-invitation', request);
+  }
+
+  static async getAllOrganizations(request: {}): Promise<OrganizationDetail[]> {
+    return await apiGet('/organizations/all', request);
   }
 }
